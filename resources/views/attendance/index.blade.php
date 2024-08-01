@@ -135,7 +135,13 @@
                     <input type="hidden" name="intern_id" value="{{ Auth::user()->intern->id }}">
                     <input type="hidden" name="latitude" id="latitude">
                     <input type="hidden" name="longitude" id="longitude">
-                    <input type="hidden" name="work_location" id="work_location" value="{{ $todayAttendance->work_location }}">
+                    @if ($todayAttendance)
+                        <input type="hidden" name="work_location" id="work_location" value="{{ $todayAttendance->work_location }}">
+                    @else
+                        <input type="hidden" name="work_location" id="work_location" value="office">
+                    @endif
+                    
+                    {{-- handle error belum assign --}}
                     <!-- other fields as needed -->
                 </form>
               <!-- Modal footer -->
