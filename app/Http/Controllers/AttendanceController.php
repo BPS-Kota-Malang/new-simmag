@@ -9,9 +9,23 @@ use App\Models\Intern;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Services\InternService;
+use App\Services\AttendanceService;
 
 class AttendanceController extends Controller
 {
+    /**
+     * INject Service
+     */
+    protected $internService;
+    protected $attendanceService;
+
+    public function __construct(InternService $internService, AttendanceService $attendanceService)
+    {
+        $this->internService = $internService;
+        $this->attendanceService = $attendanceService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -22,14 +36,15 @@ class AttendanceController extends Controller
 
         // Get today's date
         $today = Carbon::today()->format('Y-m-d');
-
+        $todayAttendance = $this->attendanceService->getAttendancesForDate($internId, $today);
         // Retrieve today's attendance records
-        $todayAttendance = Attendance::where('intern_id', $internId)
-                                    ->whereDate('date', $today)
-                                    ->first();
+        // $todayAttendance = Attendance::where('intern_id', $internId)
+        //                             ->whereDate('date', $today)
+        //                             ->first();
 
         $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
+        // $monthAttendance = $this->attendanceService->getAttendancesForDateRange($internId, $today);
         $monthAttendance = Attendance::where('intern_id', $internId)
                              ->whereBetween('date', [$startOfMonth, $endOfMonth])
                              ->get();
@@ -41,17 +56,6 @@ class AttendanceController extends Controller
 
     public function markAttendance(Request $request)
     {   
-        
-        // // $internId = Auth::user()->intern->id;
-        // $internId = $request->input('intern_id');
-        // $now = Carbon::now()->format('Y-m-d');
-        // $currentTime = Carbon::now()->format('H:i:s');
-
-        // // Retrieve today's attendance record for the specified intern
-        // $attendance = Attendance::where('intern_id', $internId)
-        //                         ->whereDate('date', $now)
-        //                         ->first();
-
         $request->validate([
             'intern_id' => 'required|integer',
             'latitude' => 'nullable|numeric|min:-90|max:90',
@@ -71,10 +75,17 @@ class AttendanceController extends Controller
                                 ->whereDate('date', $now)
                                 ->first();
 
+
+        if (!$attendance)
+        {
+            $this->attendanceService->makeAttendanceLocation($internId, $date = $now, $workLocation = 'office');
+        }
+
+
         /**
          * Updating Checkin
          */
-
+        
         if (!$attendance->check_in) {
             $attendance->check_in = $currentTime;
             $attendance->save();
@@ -88,7 +99,7 @@ class AttendanceController extends Controller
             $attendance->check_out = $currentTime;
             $attendance->save();
             // return response()->json(['message' => 'Checked out']);
-            return redirect()->back()->with(['message' => 'Checked in']);
+            return redirect()->back()->with(['message' => 'Checked Out']);
         } else {
             // Multiple button presses scenario: handle updating existing check-in/check-out times
             $checkIns = Attendance::where('intern_id', $internId)
@@ -108,6 +119,8 @@ class AttendanceController extends Controller
 
             $attendance->check_in = $earliestCheckIn;
             $attendance->check_out = $latestCheckOut;
+            $attendance->longitude = $longitude;
+            $attendance->latitude = $latitude;
 
             $workhours = $attendance->workhours; // This will call the accessor
             $attendance->save();

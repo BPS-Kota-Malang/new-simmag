@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container w-full mx-auto px-4 py-12">
-    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+<div class="container w-full px-4 py-12">
+    <div class="mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h2 class="text-3xl font-semibold text-gray-800 mb-8">Intern Attendances</h2>
 
         <div class="mb-8 flex items-center justify-between">
@@ -24,6 +24,7 @@
                         <th scope="col" class="px-6 py-3">Check Out</th>
                         <th scope="col" class="px-6 py-3">Work Hours</th>
                         <th scope="col" class="px-6 py-3">Work Location</th>
+                        <th scope="col" class="px-6 py-3">Status</th>
                         <th scope="col" class="px-6 py-3">Actions</th>
                     </tr>
                 </thead>
@@ -54,6 +55,7 @@ $(document).ready(function() {
             { data: 'check_in', name: 'check_in' },
             { data: 'check_out', name: 'check_out' },
             { data: 'workhours', name: 'workhours' },
+            { data: 'status', name: 'status' },
             { data: 'work_location', name: 'work_location' },
             { data: 'actions', name: 'actions', orderable: false, searchable: false }
         ],
