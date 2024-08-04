@@ -106,6 +106,9 @@ class ApplyController extends Controller
             ]
         );
 
+        $intern->user->removeRole('Applicant');
+        $intern->user->assignRole('Intern');
+
         return redirect()->route('dashboard')->with('success', 'Status updated successfully!');
         
     }

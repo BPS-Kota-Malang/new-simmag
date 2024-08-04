@@ -80,4 +80,16 @@ class AttendanceService
             ]
         );
     }
+
+    /**
+     * Make Status
+     */
+    public function makeStatusAttendance ($check_in, $checkout, $status)
+    {
+        Attendance::updateOrCreate(
+            [
+                'status' => $status,
+            ],
+        );
+    }
 }

@@ -23,6 +23,7 @@ class Intern extends Model
         'start_date',
         'end_date',
         'user_id',
+        'division_id',
         'work_status',
     ];
 

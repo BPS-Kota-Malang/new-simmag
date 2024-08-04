@@ -27,6 +27,8 @@
                             <th scope="col" class="px-6 py-3">Universitas</th>
                             <th scope="col" class="px-6 py-3">Fakultas</th>
                             <th scope="col" class="px-6 py-3">Jurusan</th>
+                            <th scope="col" class="px-6 py-3">File Proposal</th>
+                            <th scope="col" class="px-6 py-3">File Pengantar</th>
                             <th scope="col" class="px-6 py-3">Tanggal Pengajuan Magang</th>
                             <th scope="col" class="px-6 py-3">Tanggal Magang</th>
                             <th scope="col" class="px-6 py-3">Action</th>
@@ -45,6 +47,8 @@
                             <td class="px-6 py-4">{{ $apply->intern->university }}</td>
                             <td class="px-6 py-4">{{ $apply->intern->faculty }}</td>
                             <td class="px-6 py-4">{{ $apply->intern->courses }}</td>
+                            <td class="px-6 py-4">{{ $apply->intern->file_proposal }}</td>
+                            <td class="px-6 py-4">{{ $apply->intern->file_suratpengantar }}</td>
                             <td class="px-6 py-4">{{ $apply->start_date_apply . " - " . $apply->end_date_apply }}</td>
                             <td class="px-6 py-4">
                                 @if ($apply->start_date_answer)

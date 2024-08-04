@@ -23,7 +23,12 @@ class HomeController extends Controller
                     $apply = $intern->apply->last();
                     return view('intern.dashboard-intern')->with('intern', $intern)->with('apply', $apply);
             case 'Applicant':
-                return view('intern.dashboard-applicant')->with('user', $user);
+                    $intern = $user->intern;
+                    $apply = $intern->apply->last();
+                return view('intern.dashboard-applicant')
+                        ->with('user', $user)
+                        ->with('apply', $apply)
+                        ->with('intern', $intern);
             case 'User':
                 return view('intern.dashboard-user')->with('user', $user);
             default:

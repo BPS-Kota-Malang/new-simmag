@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->foreignId('user_id')->constrained()->nullable();
+            $table->foreignId('division_id')->constrained()->nullable();
             $table->enum('work_status', ['accepted', 'on progress', 'rejected'])->default('on progress');
             $table->timestamps();
         });

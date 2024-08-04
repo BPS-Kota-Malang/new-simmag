@@ -10,30 +10,36 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\User;
 use App\Services\UniversityService;
+use App\Services\InternService;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Models\Apply;
+use App\Models\Division;
+
 
 class InternController extends Controller
 {   
 
     protected $universityService;
+    protected $internService;
 
     // Inject the service via the constructor
-    public function __construct(UniversityService $universityService)
+    public function __construct(UniversityService $universityService, InternService $internService)
     {
         $this->universityService = $universityService;
+        $this->internService = $internService;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // return redirect('intern.dashboard-applicant')->with('user', $user);
+        $intern = $this->internService->getAuthIntern();
+        // return $intern;
+        return view('intern.profile')->with('intern', $intern);
     }
 
     public function statusIntern ($user)
     {   
-
         $user->assignRole('Intern');
     }
 
@@ -47,7 +53,6 @@ class InternController extends Controller
 
         $user = Auth::user();
         
-
         return view('intern.apply', compact('user', 'universities'));
     }
 
@@ -57,12 +62,11 @@ class InternController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        $tatausaha = Division::where('name', 'Sub Bagian Umum')
+                                ->pluck('id')                        
+                                ->first();
 
-        $request->merge([
-            'user_id' => $user->id,
-            'work_status' => 'on progress',
-        ]);
-
+       
         /**
          * Validate $request from frontend
          */
@@ -81,8 +85,15 @@ class InternController extends Controller
             // 'work_status' => 'required|in:accepted,on progress,rejected',
         ]);
 
+        $request->merge([
+            'user_id' => $user->id,
+            'work_status' => 'on progress',
+            'division_id' => $tatausaha,
+        ]);
+
         $intern = new Intern($request->all());
 
+        // dd($intern);
         if ($request->hasFile('file_proposal')) {
             $intern->file_proposal = $request->file('file_proposal')->store('proposals', 'public');
         }
@@ -106,11 +117,11 @@ class InternController extends Controller
         
         // $internData = Intern::find($)
         // $user->drop
-        $user->assignRole("Intern");
+        $user->assignRole("Applicant");
 
         // dd ($intern); 
         return redirect()->route('dashboard')
-            ->with('success', 'Intern created successfully.');
+            ->with('success', 'Applicant created successfully.');
 
     }
 

@@ -30,7 +30,7 @@ class AttendanceController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {   
+    {    
         $internId = Auth::user()->intern->id;
         $attendances = Attendance::all();
 
@@ -75,57 +75,61 @@ class AttendanceController extends Controller
                                 ->whereDate('date', $now)
                                 ->first();
 
-
+        /**
+         * Check today attendance Record
+         */
         if (!$attendance)
         {
             $this->attendanceService->makeAttendanceLocation($internId, $date = $now, $workLocation = 'office');
-        }
-
-
-        /**
-         * Updating Checkin
-         */
-        
-        if (!$attendance->check_in) {
-            $attendance->check_in = $currentTime;
-            $attendance->save();
-            // return response()->json(['message' => 'Checked in']);
-            return redirect()->back()->with(['message' => 'Checked in']);
-        }
-
-        // If there's already a record, determine if we need to check-in or check-out
-        if (!$attendance->check_out) {
-            // Check-out if check-in exists and check-out does not
-            $attendance->check_out = $currentTime;
-            $attendance->save();
-            // return response()->json(['message' => 'Checked out']);
-            return redirect()->back()->with(['message' => 'Checked Out']);
         } else {
-            // Multiple button presses scenario: handle updating existing check-in/check-out times
-            $checkIns = Attendance::where('intern_id', $internId)
-                                  ->whereDate('date', $now)
-                                  ->whereNotNull('check_in')
-                                  ->pluck('check_in')
-                                  ->toArray();
+            /**
+             * Updating Checkin
+             */
+            if (!$attendance->check_in) {
+                $attendance->check_in = $currentTime;
+                $attendance->latitude_in = $latitude;
+                $attendance->longitude_in = $longitude;
+                $attendance->save();
+                // return response()->json(['message' => 'Checked in']);
+                return redirect()->back()->with(['message' => 'Checked in']);
+            }
 
-            $checkOuts = Attendance::where('intern_id', $internId)
-                                   ->whereDate('date', $now)
-                                   ->whereNotNull('check_out')
-                                   ->pluck('check_out')
-                                   ->toArray();
+            // If there's already a record, determine if we need to check-in or check-out
+            if (!$attendance->check_out) {
+                // Check-out if check-in exists and check-out does not
+                $attendance->check_out = $currentTime;
+                $attendance->latitude_out = $latitude;
+                $attendance->longitude_out = $longitude;
+                $attendance->save();
+                // return response()->json(['message' => 'Checked out']);
+                return redirect()->back()->with(['message' => 'Checked Out']);
+            } else {
+                // Multiple button presses scenario: handle updating existing check-in/check-out times
+                $checkIns = Attendance::where('intern_id', $internId)
+                                    ->whereDate('date', $now)
+                                    ->whereNotNull('check_in')
+                                    ->pluck('check_in')
+                                    ->toArray();
 
-            $earliestCheckIn = min($checkIns);
-            $latestCheckOut = max(array_merge($checkOuts, [$currentTime]));
+                $checkOuts = Attendance::where('intern_id', $internId)
+                                    ->whereDate('date', $now)
+                                    ->whereNotNull('check_out')
+                                    ->pluck('check_out')
+                                    ->toArray();
 
-            $attendance->check_in = $earliestCheckIn;
-            $attendance->check_out = $latestCheckOut;
-            $attendance->longitude = $longitude;
-            $attendance->latitude = $latitude;
+                $earliestCheckIn = min($checkIns);
+                $latestCheckOut = max(array_merge($checkOuts, [$currentTime]));
 
-            $workhours = $attendance->workhours; // This will call the accessor
-            $attendance->save();
-            // return response()->json(['message' => 'Updated attendance']);
-            return redirect()->back()->with(['message' => 'Checked in']);
+                $attendance->check_in = $earliestCheckIn;
+                $attendance->check_out = $latestCheckOut;
+                $attendance->latitude_out = $latitude;
+                $attendance->longitude_out = $longitude;
+
+                $workhours = $attendance->workhours; // This will call the accessor
+                $attendance->save();
+                // return response()->json(['message' => 'Updated attendance']);
+                return redirect()->back()->with(['message' => 'Checked in']);
+                }
         }
     }
 
