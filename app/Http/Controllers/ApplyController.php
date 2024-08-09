@@ -6,11 +6,23 @@ use App\Models\Apply;
 use App\Models\Intern;
 use App\Http\Requests\StoreApplyRequest;
 use App\Http\Requests\UpdateApplyRequest;
+use App\Models\University;
+use App\Services\InternService;
+use App\Services\UniversityService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
+
 
 class ApplyController extends Controller
-{
+{   
+    protected $universityService;
+    protected $internService;
+
+    public function __construct(UniversityService $universityService, InternService $internService)
+    {
+        $this->universityService = $universityService;
+        $this->internService = $internService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -18,7 +30,7 @@ class ApplyController extends Controller
     {
         $applies = Apply::all();
 
-        return view('apply.index')
+        return view('superadmin.apply')
             ->with('applies', $applies);
     }
 
@@ -27,7 +39,14 @@ class ApplyController extends Controller
      */
     public function create()
     {
-        //
+        // Use the service to get universities
+        $universities = $this->universityService->getUniversities();
+
+        $user = Auth::user();
+        
+        return view('apply.create')
+                ->with('user', $user)
+                ->with('universities', $universities);
     }
 
     /**
@@ -35,7 +54,7 @@ class ApplyController extends Controller
      */
     public function store(StoreApplyRequest $request)
     {
-        //
+        
     }
 
     /**
@@ -122,6 +141,9 @@ class ApplyController extends Controller
                 'work_status' => 'rejected'
             ]
         );
+
+        $intern->user->removeRole('Intern');
+        $intern->user->assignRole('User');
 
         return redirect()->route('dashboard')->with('success', 'Status updated successfully!');
 

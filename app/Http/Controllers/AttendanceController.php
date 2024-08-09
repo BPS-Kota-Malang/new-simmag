@@ -192,4 +192,9 @@ class AttendanceController extends Controller
     {
         //
     }
+
+    public function reportAttendancePage()
+    {
+        return view('attendance.report');
+    }
 }

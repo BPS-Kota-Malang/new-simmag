@@ -6,16 +6,26 @@ use App\Models\University;
 use App\Http\Requests\StoreUniversityRequest;
 use App\Http\Requests\UpdateUniversityRequest;
 use App\Services\UniversityService;
+use Illuminate\Http\Request;
+
 
 class UniversityController extends Controller
 {
 
-    protected $universityService;
+protected $universityService;
 
     // Inject the service via the constructor
     public function __construct(UniversityService $universityService)
     {
         $this->universityService = $universityService;
+    }
+
+    public function search (Request $request)
+    {
+        $query = $request->input('query');
+        $universities = University::where('name', 'LIKE', "%{$query}%")->get();
+
+        return response()->json($universities);
     }
 
     /**
@@ -37,9 +47,11 @@ class UniversityController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUniversityRequest $request)
+    public function store(Request $request)
     {
-        //
+        $request->validate(['name' => 'required|string']);
+        $university = University::create(['name' => $request->name]);
+        return response()->json(['success' => true, 'item' => $university]);
     }
 
     /**

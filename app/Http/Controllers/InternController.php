@@ -11,10 +11,9 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\User;
 use App\Services\UniversityService;
 use App\Services\InternService;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Models\Apply;
 use App\Models\Division;
-
+use Carbon\Carbon;
 
 class InternController extends Controller
 {   
@@ -60,40 +59,46 @@ class InternController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $user = Auth::user();
-        $tatausaha = Division::where('name', 'Sub Bagian Umum')
-                                ->pluck('id')                        
-                                ->first();
-
-       
+    {   
+        $user = Auth::user();  
         /**
          * Validate $request from frontend
          */
+        // dd($request);
+
         $request->validate([
+            'name' => 'required|string|max:255',
             'nim' => 'required|string|max:20',
-            'name' => 'required|string|max:50',
-            'university' => 'required|string|max:100',
-            'faculty' => 'required|string|max:100',
-            'courses' => 'required|string|max:100',
-            'phone' => 'required|string|max:15',
-            'file_proposal' => 'required|file|mimes:pdf|max:2048',
-            'file_suratpengantar' => 'required|file|mimes:pdf|max:2048',
+            'university_id' => 'required',
+            'faculty_id' => 'required',
+            'department_id' => 'required',
+            'phone' => 'required|string|max:20',
+            'file_proposal' => 'required|file|mimes:pdf,doc,docx',
+            'file_suratpengantar' => 'required|file|mimes:pdf,doc,docx',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            // 'user_id' => 'required|exists:users,id',
-            // 'work_status' => 'required|in:accepted,on progress,rejected',
         ]);
+        
+         // Create Carbon instances from the request dates
+        $formattedStartDate = Carbon::parse($request->input('start_date'))->format('Y-m-d');
+        $formattedEndDate = Carbon::parse($request->input('end_date'))->format('Y-m-d');
+        
+        // Create and save the intern with formatted dates
+        $intern = new Intern();
+        $intern->name = $request->input('name');
+        $intern->nim = $request->input('nim');
+        $intern->phone = $request->input('phone');
+        $intern->university_id = $request->input('university_id');
+        $intern->faculty_id = $request->input('faculty_id');
+        $intern->department_id = $request->input('department_id');
+        $intern->start_date = $formattedStartDate;
+        $intern->end_date = $formattedEndDate;
+        $intern->user_id = Auth::user()->id;
+        $intern->work_status = 'on progress';
+        $intern->division_id = Division::where('name', 'Sub Bagian Umum')->pluck('id')->first();
 
-        $request->merge([
-            'user_id' => $user->id,
-            'work_status' => 'on progress',
-            'division_id' => $tatausaha,
-        ]);
+        // $intern->save();
 
-        $intern = new Intern($request->all());
-
-        // dd($intern);
         if ($request->hasFile('file_proposal')) {
             $intern->file_proposal = $request->file('file_proposal')->store('proposals', 'public');
         }
@@ -110,8 +115,8 @@ class InternController extends Controller
         $applies = Apply::create(
             [
                 'intern_id' => $intern->id,
-                'start_date_apply' => $request->start_date,
-                'end_date_apply' => $request->end_date,
+                'start_date_apply' => $formattedStartDate,
+                'end_date_apply' => $formattedEndDate,
             ]
         );
         

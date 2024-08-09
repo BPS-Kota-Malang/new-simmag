@@ -30,7 +30,7 @@ class AdminAttendanceController extends Controller
     {
         return view('superadmin.attendance');
     }
-
+    
     public function getData()
     {
         $start_date = '2024-01-01';
