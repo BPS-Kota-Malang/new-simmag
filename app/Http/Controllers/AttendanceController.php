@@ -125,7 +125,9 @@ class AttendanceController extends Controller
                 $attendance->latitude_out = $latitude;
                 $attendance->longitude_out = $longitude;
 
-                $workhours = $attendance->workhours; // This will call the accessor
+                // $attendance->workhours = $getworkhours; // This will call the accessor
+                $status = $this->attendanceService->getStatusAttendance($earliestCheckIn);
+                $attendance->status = $status;
                 $attendance->save();
                 // return response()->json(['message' => 'Updated attendance']);
                 return redirect()->back()->with(['message' => 'Checked in']);

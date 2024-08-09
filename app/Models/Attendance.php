@@ -29,14 +29,25 @@ class Attendance extends Model
         return $this->belongsTo(Intern::class);
     }
 
-    public function getWorkhoursAttribute()
-    {
-        if ($this->check_in && $this->check_out) {
-            $checkIn = Carbon::parse($this->check_in);
-            $checkOut = Carbon::parse($this->check_out);
-            return $checkOut->diff($checkIn)->format('%H:%I:%S');
-        }
+//     public function getWorkhoursAttribute()
+//     {
+//         if ($this->check_in && $this->check_out) {
+//             $checkIn = Carbon::parse($this->check_in);
+//             $checkOut = Carbon::parse($this->check_out);
+//             return $checkOut->diff($checkIn)->format('%H:%I:%S');
+//         }
 
-        return null;
+//         return null;
+//     }
+
+    protected static function booted()
+    {
+        static::saving(function ($model) {
+            if ($model->check_in && $model->check_out) {
+                $checkIn = Carbon::parse($model->check_in);
+                $checkOut = Carbon::parse($model->check_out);
+                $model->workhours = $checkOut->diff($checkIn)->format('%H:%I:%S');
+            }
+        });
     }
 }

@@ -84,12 +84,31 @@ class AttendanceService
     /**
      * Make Status
      */
-    public function makeStatusAttendance ($check_in, $checkout, $status)
-    {
-        Attendance::updateOrCreate(
-            [
-                'status' => $status,
-            ],
-        );
+    public function getStatusAttendance ($checkin = null, $checkout = null)
+    {   
+
+        if ($checkin) {
+            $checkinTime = Carbon::parse($checkin);
+            $lateTime = Carbon::createFromTime(7, 30);
+    
+            if ($checkinTime->greaterThan($lateTime)) {
+                return 'late';
+            } else {
+                return 'present';
+            }
+        }
+
+        if ($checkout) {
+            $checkoutTime = Carbon::parse($checkout);
+            $lateTime = Carbon::createFromTime(15, 00);
+    
+            if ($lateTime->greaterThan($checkoutTime)) {
+                return 'early leave';
+            } else {
+                return 'present';
+            }
+        }
     }
+
+
 }

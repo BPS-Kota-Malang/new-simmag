@@ -64,28 +64,28 @@
             </thead>
             <tbody>
                 @foreach ($attendances as $a)
-                @if ($a->check_in)
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                    <td class="px-6 py-4 font-medium text-gray-900 dark:text-white text-center hidden md:table-cell">
-                        {{ $a->date }}
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        {{ $a->check_in }}
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        {{ $a->check_out }}
-                    </td>
-                    <td class="px-6 py-4 hidden text-center md:table-cell">
-                        {{ $a->workhours }}
-                    </td>
-                    <td class="px-6 py-4 hidden text-center md:table-cell">
-                        {{ $a->work_location }}
-                    </td>
-                    <td class="px-6 py-4 hidden text-center md:table-cell">
-                        {{ $a->status }}
-                    </td>
-                </tr>
-                @endif
+                    @if ($a->check_in)
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white text-center hidden md:table-cell">
+                            {{ $a->date }}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {{ $a->check_in }}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {{ $a->check_out }}
+                        </td>
+                        <td class="px-6 py-4 hidden text-center md:table-cell">
+                            {{ $a->workhours }}
+                        </td>
+                        <td class="px-6 py-4 hidden text-center md:table-cell">
+                            {{ $a->work_location }}
+                        </td>
+                        <td class="px-6 py-4 hidden text-center md:table-cell">
+                            {{ $a->status }}
+                        </td>
+                    </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>
@@ -109,7 +109,16 @@
         </div>
     @endif
 
-
+    <!-- Modal Structure -->
+    <div id="customAlert" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+                    <h2 class="text-xl font-semibold text-gray-800">Oops!</h2>
+                    <p class="mt-2 text-gray-600">Anda diharuskan WFO, Tidak dapat melakukan </p>
+                    <div class="mt-4 flex justify-end">
+                        <button id="closeAlertBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">OK</button>
+                    </div>
+                </div>
+    </div>
   
   <!-- Main modal -->
   <div id="attendanceModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -152,6 +161,8 @@
           </div>
       </div>    
   </div>
+
+  
   
 
     @section('javascript')
@@ -193,22 +204,17 @@
         alert("Geolocation is not supported by this browser.");
     }
 
-    function checkDistance(userLocation) {
-        var workLocation = document.getElementById('work_location').value;
-        if (workLocation === 'office') {
-            var officeLatLng = L.latLng({{ env('OFFICE_LATITUDE') }}, {{ env('OFFICE_LONGITUDE') }});
-            var distance = officeLatLng.distanceTo(userLocation);
-
-            if (distance > 300) {
-                document.getElementById('saveAttendance').addEventListener('click', function(event) {
-                    event.preventDefault();
-                    alert('BROOO ABSEN DIKANTORRR!!!');
-                });
-            }
-        }
+    function showAlert() {
+        document.getElementById('customAlert').classList.remove('hidden');
+        document.getElementById('attendanceModal').classList.add('hidden');
     }
 
-    document.getElementById('saveAttendance').addEventListener('click', function() {
+    document.getElementById('closeAlertBtn').addEventListener('click', function() {
+        document.getElementById('customAlert').classList.add('hidden');
+    });
+
+    function checkDistance(userLocation){
+        document.getElementById('saveAttendance').addEventListener('click', function() {
         const workLocation = document.getElementById('work_location').value;
         if (workLocation === 'office') {
             const userLat = parseFloat(document.getElementById('latitude').value);
@@ -218,12 +224,15 @@
             const distance = officeLatLng.distanceTo(userLatLng);
 
             if (distance > 300) {
-                alert('BROOO ABSEN DIKANTORRR!!!');
+                // alert('BROOO ABSEN DIKANTORRR!!!');
+                showAlert();
                 return;
             }
         }
         document.getElementById('attendanceForm').submit();
     });
+    }
+   
 });
 
     </script>
