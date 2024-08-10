@@ -1,0 +1,40 @@
+name: Deploy Laravel to cPanel
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'  # Specify your PHP version
+        extensions: mbstring, pdo, zip, bcmath, xml
+        ini-values: post_max_size=256M, upload_max_filesize=256M
+
+    - name: Install Composer dependencies
+      run: composer install --no-dev --optimize-autoloader
+
+    - name: Build assets
+      run: npm install && npm run prod
+
+    - name: Deploy to cPanel via FTP
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        ftp-server: ${{ secrets.FTP_SERVER }}
+        ftp-username: ${{ secrets.FTP_USERNAME }}
+        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./  # Directory to upload (root of your Laravel app)
+        remote-dir: /public_html/your-laravel-directory/  # Remote directory on cPanel
+        exclude: .git*,node_modules/*,vendor/*,tests/*,*.env
+
+    - name: Run database migrations
+      run: php artisan migrate --force
