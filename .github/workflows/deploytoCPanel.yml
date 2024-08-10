@@ -36,6 +36,22 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /public_html/ # Adjust this to your server directory
-          local-dir: ./ # Adjust this to your local directory if needed
+          server-dir: /public_html/
+          local-dir: ./
           protocol: ftps
+          state-name: .ftp-deploy-sync-state.json # Allows for partial deployments
+          log-level: verbose
+          port: 21 # Ensure this is correct, adjust if necessary
+          dry-run: false # Set to true for testing without making changes
+          passive: true # This enables passive mode, which is often needed for firewalls
+          timeout: 300 # Adjust the timeout value (in seconds) to a higher value
+      - name: Retry FTP Deploy
+        run: |
+          for i in {1..5}; do
+            if npx ftp-deploy --config .ftp-deploy.config.js; then
+              break
+            else
+              echo "Deploy failed, retrying... ($i/5)"
+              sleep 10
+            fi
+          done
