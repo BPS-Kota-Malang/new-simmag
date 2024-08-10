@@ -3,7 +3,7 @@ name: Deploy Laravel to cPanel
 on:
   push:
     branches:
-      - main  # Adjust to your main branch
+      - master  # Adjust to your main branch
 
 jobs:
   deploy:
