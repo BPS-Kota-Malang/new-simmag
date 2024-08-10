@@ -4,20 +4,14 @@
 @section('script')
     <!-- Include Google Maps JavaScript API -->
     {{-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKCHmtQ7ylAsLWp67IbYKF_J4om4Gi8XA&libraries=geometry"></script> --}}
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKCHmtQ7ylAsLWp67IbYKF_J4om4Gi8XA&callback=initMap" async defer></script>
+    {{-- <script src="{{ 'https://maps.googleapis.com/maps/api/js?key='{env('OFFICE_LATITUDE')}'&callback=initMap}}'" async defer></script> --}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 @endsection
 
 @section('content')
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard Applicant') }}
-        </h2>
-    </x-slot>
-
-
-
 <!-- Main container -->
-<div class="container mx-auto py-10 px-4 space-y-8">
+<div class="container mt-8 mx-auto py-10 px-4 space-y-8">
     <div>
         <button type="button" data-modal-target="attendanceModal" data-modal-toggle="attendanceModal" class="btn btn-primary bg-green-600 text-white hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800">
             Mark Attendance
@@ -48,44 +42,50 @@
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="px-6 py-3 hidden md:table-cell">
+                    <th scope="col" class="px-6 py-3 hidden md:table-cell text-center">
                         Tanggal
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 text-center">
                         Check In
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 text-center">
                         Check Out
                     </th>
-                    <th scope="col" class="px-6 py-3 hidden md:table-cell">
+                    <th scope="col" class="px-6 py-3 hidden text-center md:table-cell">
                         Work Hours
                     </th>
-                    <th scope="col" class="px-6 py-3 hidden md:table-cell">
+                    <th scope="col" class="px-6 py-3 hidden text-center md:table-cell">
                         Work Location
+                    </th>
+                    <th scope="col" class="px-6 py-3 hidden text-center md:table-cell">
+                        Status
                     </th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($attendances as $a)
-                @if ($a->check_in)
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
-                    <td class="px-6 py-4 font-medium text-gray-900 dark:text-white hidden md:table-cell">
-                        {{ $a->date }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $a->check_in }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $a->check_out }}
-                    </td>
-                    <td class="px-6 py-4 hidden md:table-cell">
-                        {{ $a->workhours }}
-                    </td>
-                    <td class="px-6 py-4 hidden md:table-cell">
-                        {{ $a->work_location }}
-                    </td>
-                </tr>
-                @endif
+                    @if ($a->check_in)
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white text-center hidden md:table-cell">
+                            {{ $a->date }}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {{ $a->check_in }}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            {{ $a->check_out }}
+                        </td>
+                        <td class="px-6 py-4 hidden text-center md:table-cell">
+                            {{ $a->workhours }}
+                        </td>
+                        <td class="px-6 py-4 hidden text-center md:table-cell">
+                            {{ $a->work_location }}
+                        </td>
+                        <td class="px-6 py-4 hidden text-center md:table-cell">
+                            {{ $a->status }}
+                        </td>
+                    </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>
@@ -109,7 +109,16 @@
         </div>
     @endif
 
-
+    <!-- Modal Structure -->
+    <div id="customAlert" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+                    <h2 class="text-xl font-semibold text-gray-800">Oops!</h2>
+                    <p class="mt-2 text-gray-600">Anda diharuskan WFO, Tidak dapat melakukan </p>
+                    <div class="mt-4 flex justify-end">
+                        <button id="closeAlertBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">OK</button>
+                    </div>
+                </div>
+    </div>
   
   <!-- Main modal -->
   <div id="attendanceModal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -135,7 +144,13 @@
                     <input type="hidden" name="intern_id" value="{{ Auth::user()->intern->id }}">
                     <input type="hidden" name="latitude" id="latitude">
                     <input type="hidden" name="longitude" id="longitude">
-                    <input type="hidden" name="work_location" id="work_location" value="{{ $todayAttendance->work_location }}">
+                    @if ($todayAttendance)
+                        <input type="hidden" name="work_location" id="work_location" value="{{ $todayAttendance->work_location }}">
+                    @else
+                        <input type="hidden" name="work_location" id="work_location" value="office">
+                    @endif
+                    
+                    {{-- handle error belum assign --}}
                     <!-- other fields as needed -->
                 </form>
               <!-- Modal footer -->
@@ -146,107 +161,80 @@
           </div>
       </div>    
   </div>
+
+  
   
 
     @section('javascript')
     <script>
-        let map, userMarker, officeCircle;
-    
-        function initMap() {
-            const officeLocation = { lat: parseFloat('{{ env('OFFICE_LATITUDE') }}'), lng: parseFloat('{{ env('OFFICE_LONGITUDE') }}') };
-    
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: officeLocation,
-                zoom: 15
-            });
-    
-            new google.maps.Marker({
-                position: officeLocation,
-                map: map,
-                title: 'Office Location'
-            });
-    
-            officeCircle = new google.maps.Circle({
-                strokeColor: '#FF0000',
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: '#FF0000',
-                fillOpacity: 0.35,
-                map: map,
-                center: officeLocation,
-                radius: 300
-            });
-    
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showUserPosition, handleLocationError);
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
-        }
-    
-        function showUserPosition(position) {
-            const userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
-            userMarker = new google.maps.Marker({
-                position: userLocation,
-                map: map,
-                title: 'Your Location'
-            });
-    
-            map.setCenter(userLocation);
-    
-            document.getElementById('latitude').value = userLocation.lat;
-            document.getElementById('longitude').value = userLocation.lng;
-    
-            // Check distance if work location is 'office'
-            checkDistance(userLocation);
-        }
-    
-        function handleLocationError(error) {
-            alert("Error getting your location: " + error.message);
-        }
-    
-        function checkDistance(userLocation) {
-            const workLocation = document.getElementById('work_location').value;
-            if (workLocation === 'office') {
-                const officeLocation = { lat: parseFloat('{{ env('OFFICE_LATITUDE') }}'), lng: parseFloat('{{ env('OFFICE_LONGITUDE') }}') };
-                const userLatLng = new google.maps.LatLng(userLocation.lat, userLocation.lng);
-                const officeLatLng = new google.maps.LatLng(officeLocation.lat, officeLocation.lng);
-                const distance = google.maps.geometry.spherical.computeDistanceBetween(userLatLng, officeLatLng);
-    
-                if (distance > 300) {
-                    document.getElementById('saveAttendance').addEventListener('click', function(event) {
-                        event.preventDefault(); // Prevent form submission
-                        alert('BROOO ABSEN DIKANTORRR!!!');
-                    });
-                }
-            }
-        }
-    
         document.addEventListener('DOMContentLoaded', function() {
-            $('#attendanceModal').on('shown.bs.modal', function () {
-                google.maps.event.trigger(map, 'resize');
-                initMap(); // Initialize map when modal is shown
-            });
-            
-            document.getElementById('saveAttendance').addEventListener('click', function() {
-                const workLocation = document.getElementById('work_location').value;
-                if (workLocation === 'office') {
-                    const userLat = parseFloat(document.getElementById('latitude').value);
-                    const userLng = parseFloat(document.getElementById('longitude').value);
-                    const officeLat = parseFloat('{{ env('OFFICE_LATITUDE') }}');
-                    const officeLng = parseFloat('{{ env('OFFICE_LONGITUDE') }}');
-                    const userLatLng = new google.maps.LatLng(userLat, userLng);
-                    const officeLatLng = new google.maps.LatLng(officeLat, officeLng);
-                    const distance = google.maps.geometry.spherical.computeDistanceBetween(userLatLng, officeLatLng);
-    
-                    if (distance > 300) {
-                        alert('BROOO ABSEN DIKANTORRR!!!');
-                        return; // Prevent form submission
-                    }
-                }
-                document.getElementById('attendanceForm').submit();
-            });
+    var map = L.map('map').setView([{{ env('OFFICE_LATITUDE') }}, {{ env('OFFICE_LONGITUDE') }}], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var officeLocation = L.marker([{{ env('OFFICE_LATITUDE') }}, {{ env('OFFICE_LONGITUDE') }}]).addTo(map)
+        .bindPopup('Office Location')
+        .openPopup();
+
+    var officeCircle = L.circle([{{ env('OFFICE_LATITUDE') }}, {{ env('OFFICE_LONGITUDE') }}], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 300
+    }).addTo(map);
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var userLocation = [position.coords.latitude, position.coords.longitude];
+            var userMarker = L.marker(userLocation).addTo(map)
+                .bindPopup('Your Location')
+                .openPopup();
+            map.setView(userLocation, 15);
+
+            document.getElementById('latitude').value = position.coords.latitude;
+            document.getElementById('longitude').value = position.coords.longitude;
+
+            checkDistance(userLocation);
+        }, function(error) {
+            alert("Error getting your location: " + error.message);
         });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+
+    function showAlert() {
+        document.getElementById('customAlert').classList.remove('hidden');
+        document.getElementById('attendanceModal').classList.add('hidden');
+    }
+
+    document.getElementById('closeAlertBtn').addEventListener('click', function() {
+        document.getElementById('customAlert').classList.add('hidden');
+    });
+
+    function checkDistance(userLocation){
+        document.getElementById('saveAttendance').addEventListener('click', function() {
+        const workLocation = document.getElementById('work_location').value;
+        if (workLocation === 'office') {
+            const userLat = parseFloat(document.getElementById('latitude').value);
+            const userLng = parseFloat(document.getElementById('longitude').value);
+            const officeLatLng = L.latLng({{ env('OFFICE_LATITUDE') }}, {{ env('OFFICE_LONGITUDE') }});
+            const userLatLng = L.latLng(userLat, userLng);
+            const distance = officeLatLng.distanceTo(userLatLng);
+
+            if (distance > 300) {
+                // alert('BROOO ABSEN DIKANTORRR!!!');
+                showAlert();
+                return;
+            }
+        }
+        document.getElementById('attendanceForm').submit();
+    });
+    }
+   
+});
+
     </script>
     
     @endsection

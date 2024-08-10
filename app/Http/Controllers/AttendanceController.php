@@ -9,27 +9,42 @@ use App\Models\Intern;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Services\InternService;
+use App\Services\AttendanceService;
 
 class AttendanceController extends Controller
 {
     /**
+     * INject Service
+     */
+    protected $internService;
+    protected $attendanceService;
+
+    public function __construct(InternService $internService, AttendanceService $attendanceService)
+    {
+        $this->internService = $internService;
+        $this->attendanceService = $attendanceService;
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
-    {   
+    {    
         $internId = Auth::user()->intern->id;
         $attendances = Attendance::all();
 
         // Get today's date
         $today = Carbon::today()->format('Y-m-d');
-
+        $todayAttendance = $this->attendanceService->getAttendancesForDate($internId, $today);
         // Retrieve today's attendance records
-        $todayAttendance = Attendance::where('intern_id', $internId)
-                                    ->whereDate('date', $today)
-                                    ->first();
+        // $todayAttendance = Attendance::where('intern_id', $internId)
+        //                             ->whereDate('date', $today)
+        //                             ->first();
 
         $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
+        // $monthAttendance = $this->attendanceService->getAttendancesForDateRange($internId, $today);
         $monthAttendance = Attendance::where('intern_id', $internId)
                              ->whereBetween('date', [$startOfMonth, $endOfMonth])
                              ->get();
@@ -41,17 +56,6 @@ class AttendanceController extends Controller
 
     public function markAttendance(Request $request)
     {   
-        
-        // // $internId = Auth::user()->intern->id;
-        // $internId = $request->input('intern_id');
-        // $now = Carbon::now()->format('Y-m-d');
-        // $currentTime = Carbon::now()->format('H:i:s');
-
-        // // Retrieve today's attendance record for the specified intern
-        // $attendance = Attendance::where('intern_id', $internId)
-        //                         ->whereDate('date', $now)
-        //                         ->first();
-
         $request->validate([
             'intern_id' => 'required|integer',
             'latitude' => 'nullable|numeric|min:-90|max:90',
@@ -72,47 +76,62 @@ class AttendanceController extends Controller
                                 ->first();
 
         /**
-         * Updating Checkin
+         * Check today attendance Record
          */
-
-        if (!$attendance->check_in) {
-            $attendance->check_in = $currentTime;
-            $attendance->save();
-            // return response()->json(['message' => 'Checked in']);
-            return redirect()->back()->with(['message' => 'Checked in']);
-        }
-
-        // If there's already a record, determine if we need to check-in or check-out
-        if (!$attendance->check_out) {
-            // Check-out if check-in exists and check-out does not
-            $attendance->check_out = $currentTime;
-            $attendance->save();
-            // return response()->json(['message' => 'Checked out']);
-            return redirect()->back()->with(['message' => 'Checked in']);
+        if (!$attendance)
+        {
+            $this->attendanceService->makeAttendanceLocation($internId, $date = $now, $workLocation = 'office');
         } else {
-            // Multiple button presses scenario: handle updating existing check-in/check-out times
-            $checkIns = Attendance::where('intern_id', $internId)
-                                  ->whereDate('date', $now)
-                                  ->whereNotNull('check_in')
-                                  ->pluck('check_in')
-                                  ->toArray();
+            /**
+             * Updating Checkin
+             */
+            if (!$attendance->check_in) {
+                $attendance->check_in = $currentTime;
+                $attendance->latitude_in = $latitude;
+                $attendance->longitude_in = $longitude;
+                $attendance->save();
+                // return response()->json(['message' => 'Checked in']);
+                return redirect()->back()->with(['message' => 'Checked in']);
+            }
 
-            $checkOuts = Attendance::where('intern_id', $internId)
-                                   ->whereDate('date', $now)
-                                   ->whereNotNull('check_out')
-                                   ->pluck('check_out')
-                                   ->toArray();
+            // If there's already a record, determine if we need to check-in or check-out
+            if (!$attendance->check_out) {
+                // Check-out if check-in exists and check-out does not
+                $attendance->check_out = $currentTime;
+                $attendance->latitude_out = $latitude;
+                $attendance->longitude_out = $longitude;
+                $attendance->save();
+                // return response()->json(['message' => 'Checked out']);
+                return redirect()->back()->with(['message' => 'Checked Out']);
+            } else {
+                // Multiple button presses scenario: handle updating existing check-in/check-out times
+                $checkIns = Attendance::where('intern_id', $internId)
+                                    ->whereDate('date', $now)
+                                    ->whereNotNull('check_in')
+                                    ->pluck('check_in')
+                                    ->toArray();
 
-            $earliestCheckIn = min($checkIns);
-            $latestCheckOut = max(array_merge($checkOuts, [$currentTime]));
+                $checkOuts = Attendance::where('intern_id', $internId)
+                                    ->whereDate('date', $now)
+                                    ->whereNotNull('check_out')
+                                    ->pluck('check_out')
+                                    ->toArray();
 
-            $attendance->check_in = $earliestCheckIn;
-            $attendance->check_out = $latestCheckOut;
+                $earliestCheckIn = min($checkIns);
+                $latestCheckOut = max(array_merge($checkOuts, [$currentTime]));
 
-            $workhours = $attendance->workhours; // This will call the accessor
-            $attendance->save();
-            // return response()->json(['message' => 'Updated attendance']);
-            return redirect()->back()->with(['message' => 'Checked in']);
+                $attendance->check_in = $earliestCheckIn;
+                $attendance->check_out = $latestCheckOut;
+                $attendance->latitude_out = $latitude;
+                $attendance->longitude_out = $longitude;
+
+                // $attendance->workhours = $getworkhours; // This will call the accessor
+                $status = $this->attendanceService->getStatusAttendance($earliestCheckIn);
+                $attendance->status = $status;
+                $attendance->save();
+                // return response()->json(['message' => 'Updated attendance']);
+                return redirect()->back()->with(['message' => 'Checked in']);
+                }
         }
     }
 
@@ -174,5 +193,10 @@ class AttendanceController extends Controller
     public function destroy(Attendance $attendance)
     {
         //
+    }
+
+    public function reportAttendancePage()
+    {
+        return view('attendance.report');
     }
 }

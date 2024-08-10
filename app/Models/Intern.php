@@ -14,15 +14,16 @@ class Intern extends Model
     protected $fillable = [
         'nim',
         'name',
-        'university',
-        'faculty',
-        'courses',
+        'university_id',
+        'faculty_id',
+        'department_id',
         'phone',
         'file_proposal',
         'file_suratpengantar',
         'start_date',
         'end_date',
         'user_id',
+        'division_id',
         'work_status',
     ];
 

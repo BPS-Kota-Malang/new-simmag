@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminApplyController;
 use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\ApplyController;
 use App\Http\Controllers\LoginController;
@@ -11,6 +12,12 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InternController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\FacultyController;
+use App\Http\Controllers\UniversityController;
+use App\Models\Department;
+use App\Models\Faculty;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +39,14 @@ Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 
 Route::middleware('auth')->group(function () {
     Route::resource('interns', InternController::class);
     Route::resource('apply', ApplyController::class);
+    Route::get('/reportAttendance', [AttendanceController::class, 'reportAttendancePage'])->name('attendance.report');
     Route::resource('attendance', AttendanceController::class);
+    Route::resource('university', UniversityController::class);
+    Route::resource('faculty', FacultyController::class);
+    Route::resource('department', DepartmentController::class);
+    Route::get('/searchUniversity', [UniversityController::class, 'search'])->name('university.search');
+    Route::get('/searchFaculty', [FacultyController::class, 'search'])->name('faculty.search');
+    Route::get('/searchDepartment', [DepartmentController::class, 'search'])->name('department.search');
     Route::resource('/admin/attendance', AdminAttendanceController::class,['as' => 'admin']);
     Route::get('/admin/getAttendance', [AdminAttendanceController::class, 'getData'])->name('admin.attendance.getData');
     Route::get('/admin/bulk-set-work-location', [AdminAttendanceController::class, 'showBulkSetWorkLocationForm'])->name('admin.bulkSetWorkLocationForm');
@@ -43,7 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/intern/apply', [InternController::class, 'apply'])->name('intern.apply');
+    // Route::get('/intern/apply', [InternController::class, 'apply'])->name('intern.apply');
     // Route::post('/intern/store', [InternController::class, 'store'])->name('intern.store');
 });
 

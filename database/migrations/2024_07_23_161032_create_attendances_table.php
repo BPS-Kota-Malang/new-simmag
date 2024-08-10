@@ -18,10 +18,12 @@ return new class extends Migration
             $table->time('check_in')->nullable();
             $table->time('check_out')->nullable();
             $table->time('workhours')->nullable();
-            $table->enum('status', ['present', 'late', 'leave early', 'absent'])->default('present'); // possible values: present, absent, leave, etc.
+            $table->enum('status', ['present', 'late', 'leave early', 'absent', 'sick', 'leave'])->default('absent'); // possible values: present, absent, leave, etc.
             $table->enum('work_location', ['office', 'home'])->default('office'); // default value is 'office'
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
+            $table->decimal('latitude_in', 10, 7)->nullable();
+            $table->decimal('latitude_out', 10, 7)->nullable();
+            $table->decimal('longitude_in', 10, 7)->nullable();
+            $table->decimal('longitude_out', 10, 7)->nullable();
             $table->timestamps();
         });
     }

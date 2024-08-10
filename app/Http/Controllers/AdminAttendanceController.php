@@ -28,21 +28,15 @@ class AdminAttendanceController extends Controller
      */
     public function index()
     {
-        // $start_date = '2024-01-01';
-        // $end_date = Carbon::now()->format('Y-m-d');
-        // $activeAttendances = $this->attendanceService-getAttendancesForDateRange($start_date, $end_date);
-        // $attendances = $this->attendanceService->getAttendancesForActiveInterns($start_date, $end_date);
-
-        // return view('superadmin.attendance')->with('activeAttendances', $attendances);
         return view('superadmin.attendance');
     }
-
+    
     public function getData()
     {
         $start_date = '2024-01-01';
         $end_date = Carbon::now()->format('Y-m-d');
         // $activeAttendances = $this->attendanceService-getAttendancesForDateRange($start_date, $end_date);
-        $attendances = $this->attendanceService->getAttendancesForDateRange($start_date, $end_date);
+        $attendances = $this->attendanceService->getAllAttendancesForDateRange($start_date, $end_date);
         // $attendances = Attendance::all();
         // dd($attendances);
         // return $attendances->toJson();
@@ -92,15 +86,7 @@ class AdminAttendanceController extends Controller
 
         foreach ($internIds as $internId) {
             foreach ($dates as $date) {
-                Attendance::updateOrCreate(
-                    [
-                        'intern_id' => $internId,
-                        'date' => Carbon::parse($date)->format('Y-m-d'),
-                    ],
-                    [
-                        'work_location' => $workLocation,
-                    ]
-                );
+                $this->attendanceService->makeAttendanceLocation($internId, $date, $workLocation);
             }
         }
 
