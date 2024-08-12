@@ -605,8 +605,8 @@
         >
           <span class="sr-only">Open user menu</span>
           <img
-            class="w-8 h-8 rounded-full"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png"
+            class="w-8 h-8 rounded-full fit overflow-hidden border-4 border-gray-300"
+            src= {{ Auth::check() && Auth::user()->intern ? Storage::url($intern->photo) : asset('storage/img/man.png') }}
             alt="user photo"
           />
         </button>
@@ -619,7 +619,7 @@
             <span
               class="block text-sm font-semibold text-gray-900 dark:text-white"
               {{-- >{{ Auth::user()->intern->name }}</span --}}
-              >{{ Auth::check() && Auth::user()->intern ? Auth::user()->intern->name : Auth::user()->name }}</span
+              > {{ Auth::check() && Auth::user()->intern ? Auth::user()->intern->name : Auth::user()->name }}</span
             >
             <span
               class="block text-sm text-gray-900 truncate dark:text-white"

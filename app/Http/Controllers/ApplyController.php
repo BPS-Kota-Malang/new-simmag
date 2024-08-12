@@ -11,7 +11,7 @@ use App\Services\InternService;
 use App\Services\UniversityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Yajra\DataTables\Facades\DataTables;
 
 class ApplyController extends Controller
 {   
@@ -28,12 +28,34 @@ class ApplyController extends Controller
      */
     public function index()
     {
-        $applies = Apply::all();
-
-        return view('superadmin.apply')
-            ->with('applies', $applies);
+        return view('superadmin.apply');
     }
 
+    public function getData()
+    {
+        $applies = Apply::all();
+                
+        return DataTables::of($applies)
+        ->addColumn('intern_name', function($apply) {
+            return $apply->intern->name;
+        })
+        ->addColumn('actions', function($apply) {
+            return '
+            
+                <a href="'.route('admin.apply.edit', $apply->id).'" class="text-blue-500 hover:text-blue-700">Edit</a>
+                <a href="#" data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="text-blue-600 hover:text-blue-800">
+                        <i class="fa fa-edit"></i>
+                </a>
+                <form action="'.route('admin.apply.destroy', $apply->id).'" method="POST" class="inline-block ml-2">
+                    '.csrf_field().'
+                    '.method_field('DELETE').'
+                    <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                </form>';
+        })
+        ->rawColumns(['actions'])
+        ->make(true);
+        // ->toJson();
+    }
     /**
      * Show the form for creating a new resource.
      */
