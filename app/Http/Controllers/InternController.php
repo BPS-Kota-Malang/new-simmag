@@ -14,6 +14,9 @@ use App\Services\InternService;
 use App\Models\Apply;
 use App\Models\Division;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+
 
 class InternController extends Controller
 {   
@@ -42,6 +45,40 @@ class InternController extends Controller
         $user->assignRole('Intern');
     }
 
+    /**
+     * update photo profile
+     */
+
+    public function updatePhotoProfile(Request $request){
+        
+        // $request->validate([
+        //     'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        // ]);
+        $validator = Validator::make($request->all(), [
+            'photo' => 'required|image|mimes:jpg,jpeg,png|max:10240',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        
+        $intern = $this->internService->getAuthIntern();
+        // dd($intern);
+        // Store the new photo
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($intern->photo && Storage::exists($intern->photo)) {
+                Storage::delete($intern->photo);
+            }
+            $filename = time()  . $intern->id . '_'  . $intern->name . '.' . $request->file('photo')->extension();
+            $path = $request->file('photo')->storeAs('/public/profile_photos', $filename);
+            // dd($path);
+            // $intern->file_proposal = $request->file('file_proposal')->store('proposals', 'public');
+            $intern->update(['photo' => $path]);
+        }
+
+        return redirect()->back()->with('status', 'Profile photo updated successfully!');
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -149,9 +186,21 @@ class InternController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Intern $intern)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:255',
+        ]);
+
+        $intern = Intern::findOrFail($id);
+        $intern->update([
+            'name' => $request->input('name'),
+            'phone' => $request->input('phone'),
+            // Update other fields as needed
+        ]);
+
+        return redirect()->back()->with('status', 'Profile updated successfully!');
     }
 
     /**

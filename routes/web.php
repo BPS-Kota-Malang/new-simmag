@@ -33,11 +33,15 @@ use App\Models\Faculty;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/privacy-policy', function () {
+    return view('privacy');
+});
 
 Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::resource('interns', InternController::class);
+    Route::post('/intern/updatephoto', [InternController::class, 'updatePhotoProfile'])->name('update_photo');
     Route::resource('apply', ApplyController::class);
     Route::get('/reportAttendance', [AttendanceController::class, 'reportAttendancePage'])->name('attendance.report');
     Route::resource('attendance', AttendanceController::class);

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Intern extends Model
 {
@@ -18,6 +19,7 @@ class Intern extends Model
         'faculty_id',
         'department_id',
         'phone',
+        'photo',
         'file_proposal',
         'file_suratpengantar',
         'start_date',
@@ -42,5 +44,19 @@ class Intern extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    public function university() : BelongsTo
+    {
+        return $this->belongsTo(University::class);
+    }
+
+    public function faculty() : BelongsTo
+    {
+        return $this->belongsTo(Faculty::class);
+    }   
+
+    public function department() : BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
 
 }

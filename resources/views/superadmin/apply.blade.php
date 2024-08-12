@@ -44,9 +44,9 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 font-medium text-gray-900">{{ $apply->intern->name }}</td>
-                                <td class="px-6 py-4">{{ $apply->intern->university }}</td>
-                                <td class="px-6 py-4">{{ $apply->intern->faculty }}</td>
-                                <td class="px-6 py-4">{{ $apply->intern->courses }}</td>
+                                <td class="px-6 py-4">{{ $apply->intern->university->name }}</td>
+                                <td class="px-6 py-4">{{ $apply->intern->faculty->name }}</td>
+                                <td class="px-6 py-4">{{ $apply->intern->department->name }}</td>
                                 <td class="px-6 py-4">{{ $apply->intern->file_proposal }}</td>
                                 <td class="px-6 py-4">{{ $apply->intern->file_suratpengantar }}</td>
                                 <td class="px-6 py-4">{{ $apply->start_date_apply . " - " . $apply->end_date_apply }}</td>

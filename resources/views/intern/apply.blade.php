@@ -31,6 +31,7 @@
             </script>
         </head>
         <body>
+         
             <main class="p-1 w-full md:ml-4 h-auto pt-4">
                 <  <div class="container mx-auto py-10 px-4">
                     <form method="POST" action="{{ route('interns.store') }}" enctype="multipart/form-data" class="space-y-6">

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Faculty extends Model
 {
@@ -12,4 +13,9 @@ class Faculty extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function intern() : BelongsTo
+    {
+        return $this->belongsTo(Intern::class);
+    }
 }

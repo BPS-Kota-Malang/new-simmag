@@ -58,29 +58,15 @@
 
         <!-- Page wrapper -->
         <div class="flex h-[100dvh] overflow-hidden">
-
-            {{-- <x-app.sidebar :variant="$attributes['sidebarVariant']" /> --}}
-            {{-- @include('layouts.sidebar', ['variant' => $sidebarVariant]) --}}
-            
             @include('layouts.navigation')
             @include('layouts.sidebar')
-            
-            <!-- Content area -->
-            {{-- <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden @if($attributes['background']){{ $attributes['background'] }}@endif" x-ref="contentarea"> --}}
-            {{-- <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden" > --}}
-
-                {{-- <x-app.header :variant="$attributes['headerVariant']" /> --}}
-                {{-- @include('layouts.header') --}}
-                
                 <main class="p-1 w-full md:ml-64 h-auto pt-4">
                     @yield('content')
                 </main>
-
-            {{-- </div> --}}
-
+            @if (Auth::user()->hasAnyRole(['user', 'applicant']))
+                @include('layouts.footer')
+            @endif
         </div>
-
         @yield('javascript')
-        <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
     </body>
 </html>

@@ -105,7 +105,7 @@ class AttendanceService
             if ($lateTime->greaterThan($checkoutTime)) {
                 return 'early leave';
             } else {
-                return 'present';
+            return 'present';
             }
         }
     }
