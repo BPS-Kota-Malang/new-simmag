@@ -36,6 +36,46 @@
             </table>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div id="crud-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="relative w-full max-w-lg mx-auto bg-white rounded-lg shadow-lg">
+            <div class="p-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-900">Edit Tanggal Pengajuan</h3>
+                <button type="button" class="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-2 absolute top-2 right-2" data-modal-toggle="crud-modal">
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l6 6m0 0l6 6m-6-6l6-6m-6 6L1 7" />
+                    </svg>
+                    <span class="sr-only">Close</span>
+                </button>
+            </div>
+            <form action="" method="POST" class="p-4">
+                @csrf
+                @method('PATCH')
+                <div class="grid gap-4 mb-4 grid-cols-2">
+                    <div>
+                        <label for="start_date_answer" class="block text-sm font-medium text-gray-700">Start Date</label>
+                        <input type="date" name="start_date_answer" id="start_date_answer" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
+                        @error('start_date_answer')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="end_date_answer" class="block text-sm font-medium text-gray-700">End Date</label>
+                        <input type="date" name="end_date_answer" id="end_date_answer" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
+                        @error('end_date_answer')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                <button type="submit" class="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                    Simpan
+                </button>
+            </form>
+        </div>
+    </div>
+
 </div>
 @endsection
 
@@ -53,12 +93,14 @@ $(document).ready(function() {
         },
         columns: [
             { data: 'intern_name', name: 'intern_name' },
-            { data: 'date', name: 'date' },
-            { data: 'check_in', name: 'check_in' },
-            { data: 'check_out', name: 'check_out' },
-            { data: 'workhours', name: 'workhours' },
             { data: 'status', name: 'status' },
-            { data: 'work_location', name: 'work_location' },
+            { data: 'university', name: 'university' },
+            { data: 'faculty', name: 'faculty' },
+            { data: 'department', name: 'department' },
+            { data: 'proposal', name: 'proposal' },
+            { data: 'pengantar', name: 'pengantar' },
+            { data: 'apply_date', name: 'apply_date', className: 'text-center' },
+            { data: 'answer_date', name: 'answer_date' , className: 'text-center'},
             { data: 'actions', name: 'actions', orderable: false, searchable: false }
         ],
         pagingType: "simple_numbers",
@@ -73,8 +115,31 @@ $(document).ready(function() {
         }
     });
 
+    // Handle the click event for edit buttons
+    $('#intern-applicant-table').on('click', '.edit-btn', function(event) {
+        event.preventDefault();
+
+        // Get data from attributes
+        const id = $(this).data('id');
+        const startDateAnswer = $(this).data('start-date-answer');
+        const endDateAnswer = $(this).data('end-date-answer');
+
+        // Set data to modal fields
+        $('#crud-modal form').attr('action', '/apply/' + id); // Adjust URL if needed
+        $('#start_date_answer').val(startDateAnswer);
+        $('#end_date_answer').val(endDateAnswer);
+
+        // Show the modal
+        $('#crud-modal').removeClass('hidden');
+    });
+
     $('#search').on('keyup', function() {
         table.search(this.value).draw();
+    });
+
+    // Handle the close button click
+    $('[data-modal-toggle="crud-modal"]').on('click', function() {
+        $('#crud-modal').addClass('hidden');
     });
 });
 </script>

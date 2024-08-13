@@ -43,6 +43,7 @@ Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 
 Route::middleware('auth')->group(function () {
     Route::resource('interns', InternController::class);
     Route::post('/intern/updatephoto', [InternController::class, 'updatePhotoProfile'])->name('update_photo');
+    Route::patch('/apply/{apply}', [ApplyController::class, 'update'])->name('apply.update');
     Route::resource('apply', ApplyController::class);
     Route::get('/reportAttendance', [AttendanceController::class, 'reportAttendancePage'])->name('attendance.report');
     Route::resource('attendance', AttendanceController::class);
