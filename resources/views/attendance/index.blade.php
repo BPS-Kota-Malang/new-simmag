@@ -167,18 +167,22 @@
 
     @section('javascript')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    var map = L.map('map').setView([{{ env('OFFICE_LATITUDE') }}, {{ env('OFFICE_LONGITUDE') }}], 15);
+
+    const officeLat = @json(config('geo.office_latitude'));
+    const officeLng = @json(config('geo.office_longitude'));
+    
+    document.addEventListener('DOMContentLoaded', function() {
+    var map = L.map('map').setView([officeLat, officeLng], 15);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    var officeLocation = L.marker([{{ env('OFFICE_LATITUDE') }}, {{ env('OFFICE_LONGITUDE') }}]).addTo(map)
+    var officeLocation = L.marker([ officeLat, officeLng]).addTo(map)
         .bindPopup('Office Location')
         .openPopup();
 
-    var officeCircle = L.circle([{{ env('OFFICE_LATITUDE') }}, {{ env('OFFICE_LONGITUDE') }}], {
+    var officeCircle = L.circle([officeLat, officeLng], {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
@@ -219,7 +223,7 @@
         if (workLocation === 'office') {
             const userLat = parseFloat(document.getElementById('latitude').value);
             const userLng = parseFloat(document.getElementById('longitude').value);
-            const officeLatLng = L.latLng({{ env('OFFICE_LATITUDE') }}, {{ env('OFFICE_LONGITUDE') }});
+            const officeLatLng = L.latLng(officeLat, officeLng);
             const userLatLng = L.latLng(userLat, userLng);
             const distance = officeLatLng.distanceTo(userLatLng);
 
