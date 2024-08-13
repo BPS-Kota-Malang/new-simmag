@@ -46,6 +46,9 @@ class ApplyController extends Controller
                 <a href="#" data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="text-blue-600 hover:text-blue-800">
                         <i class="fa fa-edit"></i>
                 </a>
+                <a href="{{ route('apply.accepted', ['id' => $apply->intern->id]) }}" class="text-green-600 hover:text-green-800 mx-2">
+                    <i class="fa fa-check-square"></i>
+                </a>
                 <form action="'.route('admin.apply.destroy', $apply->id).'" method="POST" class="inline-block ml-2">
                     '.csrf_field().'
                     '.method_field('DELETE').'

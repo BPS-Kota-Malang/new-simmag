@@ -14,8 +14,10 @@ use App\Services\InternService;
 use App\Models\Apply;
 use App\Models\Division;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 
 class InternController extends Controller
@@ -49,7 +51,8 @@ class InternController extends Controller
      * update photo profile
      */
 
-    public function updatePhotoProfile(Request $request){
+    public function updatePhotoProfile(Request $request)
+    {
         
         // $request->validate([
         //     'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -63,15 +66,26 @@ class InternController extends Controller
         }
         
         $intern = $this->internService->getAuthIntern();
-        // dd($intern);
-        // Store the new photo
+        $month = Carbon::parse($intern->start_date)->format('Ym');
+
+        
         if ($request->hasFile('photo')) {
             // Delete old photo if exists
-            if ($intern->photo && Storage::exists($intern->photo)) {
-                Storage::delete($intern->photo);
+            if ($intern->photo) {
+                // Check if the file exists on the disk
+                if (Storage::disk('public')->exists($intern->photo)) {
+                    Storage::disk('public')->delete($intern->photo);
+                } else {
+                    Log::warning('Photo not found on disk: ' . $intern->photo);
+                }
             }
-            $filename = time()  . $intern->id . '_'  . $intern->name . '.' . $request->file('photo')->extension();
-            $path = $request->file('photo')->storeAs('/public/profile_photos', $filename);
+
+            $originalName = $request->file('photo')->getClientOriginalName();
+            $extension = $request->file('photo')->getClientOriginalExtension();
+            $filename = $month. '_' . Str::slug($intern->university->name) . '_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $extension;
+            $path = $request->file('photo')->storeAs('profile_photos', $filename, 'public');
+            // $filename = time()  . $intern->id . '_'  . $intern->name . '.' . $request->file('photo')->extension();
+            // $path = $request->file('photo')->storeAs('/public/profile_photos', $filename);
             // dd($path);
             // $intern->file_proposal = $request->file('file_proposal')->store('proposals', 'public');
             $intern->update(['photo' => $path]);

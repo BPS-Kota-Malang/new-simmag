@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/attendance', AdminAttendanceController::class,['as' => 'admin']);
     Route::get('/admin/getAttendance', [AdminAttendanceController::class, 'getData'])->name('admin.attendance.getData');
     Route::get('/admin/getApplies', [ApplyController::class, 'getData'])->name('admin.apply.getData');
+    Route::get('/admin/getApplies', [ApplyController::class, 'getData'])->name('admin.apply.getData');
     Route::get('/admin/bulk-set-work-location', [AdminAttendanceController::class, 'showBulkSetWorkLocationForm'])->name('admin.bulkSetWorkLocationForm');
     Route::post('/admin/bulk-set-work-location', [AdminAttendanceController::class, 'bulkSetWorkLocation'])->name('admin.bulkSetWorkLocation');
     Route::post('/markattendance', [AttendanceController::class, 'markAttendance'])->name('attendance.mark');

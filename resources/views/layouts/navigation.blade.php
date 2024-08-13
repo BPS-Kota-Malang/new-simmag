@@ -606,7 +606,7 @@
           <span class="sr-only">Open user menu</span>
           <img
             class="w-8 h-8 rounded-full fit overflow-hidden border-4 border-gray-300"
-            src= {{ Auth::check() && Auth::user()->intern ? Storage::url($intern->photo) : asset('storage/img/man.png') }}
+            src= {{ Auth::check() && Auth::user()->intern ? Storage::url(Auth::user()->intern->photo) : asset('storage/img/man.png') }}
             alt="user photo"
           />
         </button>
