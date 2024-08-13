@@ -113,7 +113,7 @@
     <div id="customAlert" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
                     <h2 class="text-xl font-semibold text-gray-800">Oops!</h2>
-                    <p class="mt-2 text-gray-600">Anda diharuskan WFO, Tidak dapat melakukan </p>
+                    <p class="mt-2 text-gray-600">Anda diharuskan WFO, Tidak dapat melakukan Absensi</p>
                     <div class="mt-4 flex justify-end">
                         <button id="closeAlertBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">OK</button>
                     </div>
@@ -186,7 +186,7 @@
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
-        radius: 300
+        radius: 100
     }).addTo(map);
 
     if (navigator.geolocation) {
@@ -227,7 +227,7 @@
             const userLatLng = L.latLng(userLat, userLng);
             const distance = officeLatLng.distanceTo(userLatLng);
 
-            if (distance > 300) {
+            if (distance > 100) {
                 // alert('BROOO ABSEN DIKANTORRR!!!');
                 showAlert();
                 return;
