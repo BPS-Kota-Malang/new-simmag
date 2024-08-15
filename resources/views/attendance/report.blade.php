@@ -1,15 +1,45 @@
 @extends('layouts.app')
 
 @section('content')
-   
-    <section class="bg-white dark:bg-gray-900">
-        <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-            <div class="mx-auto max-w-screen-sm text-center">
-                <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-5xl text-primary-600 dark:text-primary-500">UNDER MAINTENANCE</h1>
-                <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">Mohon Maaf Masih dalam Perbaikan</p>
-                {{-- <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">Sorry, we can't find that page. You'll find lots to explore on the home page. </p> --}}
-                <a href="#" class="inline-flex text-white bg-primary-600 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-primary-900 my-4">Back to Homepage</a>
-            </div>   
-        </div>
-    </section>
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">Attendance Report</h1>
+
+    <div class="bg-white p-4 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold text-gray-800">Filter Attendance</h2>
+        <form id="filter-form" method="POST" action="">
+            @csrf
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                    <label for="intern" class="block text-sm font-medium text-gray-700">Intern</label>
+                    <select id="intern" name="intern_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500">
+                        <option value="">Select Intern</option>
+                        @foreach($interns as $intern)
+                            <option value="{{ $intern->id }}">{{ $intern->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label for="date_range" class="block text-sm font-medium text-gray-700">Date Range</label>
+                    <input type="text" id="date_range" name="date_range" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500">
+                </div>
+                <!-- Additional filters can be added here -->
+            </div>
+            <div class="mt-4 text-right">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Apply Filters and Export as PDF
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr("#date_range", {
+            mode: "range",
+            dateFormat: "Y-m-d"
+        });
+    </script>
+@endpush

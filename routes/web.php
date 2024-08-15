@@ -15,9 +15,11 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FacultyController;
+use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\UniversityController;
 use App\Models\Department;
 use App\Models\Faculty;
+use App\Models\Logbook;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +33,12 @@ use App\Models\Faculty;
 */
 
 Route::get('/', function () {
+    // Check if the user is logged in
+    if (Auth::check()) {
+        // Redirect the user to a specific route (e.g., dashboard)
+        return redirect()->route('dashboard');
+    }
+    // If not logged in, show the welcome view
     return view('welcome');
 });
 
@@ -45,6 +53,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/intern/updatephoto', [InternController::class, 'updatePhotoProfile'])->name('update_photo');
     Route::patch('/apply/{apply}', [ApplyController::class, 'update'])->name('apply.update');
     Route::resource('apply', ApplyController::class);
+    Route::resource('logbooks', LogbookController::class);
+    Route::get('/logbookslist', [LogbookController::class, 'getLogbookList'])->name('logbooks.list');
+    Route::get('/InternAttendanceData', [AttendanceController::class, 'getInternAttendanceData'])->name('attendance.getdata');
     Route::get('/reportAttendance', [AttendanceController::class, 'reportAttendancePage'])->name('attendance.report');
     Route::resource('attendance', AttendanceController::class);
     Route::resource('university', UniversityController::class);
@@ -62,6 +73,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/markattendance', [AttendanceController::class, 'markAttendance'])->name('attendance.mark');
     Route::get('/apply/accepted/{id}', [ApplyController::class, 'accepted'])->name('apply.accepted');
     Route::get('/apply/rejected/{id}', [ApplyController::class, 'rejected'])->name('apply.rejected');
+    Route::post('/logout', function () {
+        Auth::logout();
+        return redirect('/login'); // Redirect to the login page or any other page
+    })->name('logout');
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

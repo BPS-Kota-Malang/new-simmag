@@ -54,6 +54,33 @@ class AttendanceController extends Controller
             ->with('todayAttendance', $todayAttendance);
     }
 
+    public function getInternAttendanceData()
+    {
+        $start_date = '2024-01-01';
+        $end_date = Carbon::now()->format('Y-m-d');
+        // $activeAttendances = $this->attendanceService-getAttendancesForDateRange($start_date, $end_date);
+        $attendances = $this->attendanceService->getAllAttendancesForDateRange($start_date, $end_date);
+        // $attendances = Attendance::all();
+        // dd($attendances);
+        // return $attendances->toJson();
+        
+        return DataTables::of($attendances)
+        ->addColumn('intern_name', function($attendance) {
+            return $attendance->intern->name;
+        })
+        ->addColumn('actions', function($attendance) {
+            return '
+                <a href="'.route('admin.attendance.edit', $attendance->id).'" class="text-blue-500 hover:text-blue-700">Edit</a>
+                <form action="'.route('admin.attendance.destroy', $attendance->id).'" method="POST" class="inline-block ml-2">
+                    '.csrf_field().'
+                    '.method_field('DELETE').'
+                    <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                </form>';
+        })
+        ->rawColumns(['actions'])
+        ->make(true);
+        // ->toJson();
+    }
     public function markAttendance(Request $request)
     {   
         $request->validate([
@@ -196,7 +223,8 @@ class AttendanceController extends Controller
     }
 
     public function reportAttendancePage()
-    {
+    {   
         return view('attendance.report');
+        // return view('attendance.report-maintenance');
     }
 }

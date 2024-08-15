@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name') }}</title>
-
+        <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png"/>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,9 +16,10 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+
         <!-- DataTables CSS -->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
 
@@ -62,6 +63,10 @@
             @include('layouts.sidebar')
                 <main class="p-1 w-full md:ml-64 h-auto pt-4">
                     @yield('content')
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                        @csrf
+                        <button type="submit" class="text-red-600 hover:text-red-800">Logout</button>
+                    </form>
                 </main>
             @if (Auth::user()->hasAnyRole(['user', 'applicant']))
                 @include('layouts.footer')
