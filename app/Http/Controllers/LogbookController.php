@@ -7,6 +7,7 @@ use App\Http\Requests\StoreLogbookRequest;
 use App\Http\Requests\UpdateLogbookRequest;
 use App\Models\Division;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 // use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -102,12 +103,13 @@ class LogbookController extends Controller
             ], 422);
         }
 
+        $formatedDate = Carbon::parse($request->date)->format('Y-m-d');
         // Create a new logbook entry
         $logbook = new Logbook();
         $logbook->intern_id = $intern_id;
         $logbook->division_id = $request->division_id;
         $logbook->detail = $request->detail;
-        $logbook->date = $request->date;
+        $logbook->date = $formatedDate;
         $logbook->time_start = $request->time_start;
         $logbook->time_end = $request->time_end;
         $logbook->save();
