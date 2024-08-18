@@ -56,7 +56,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('logbooks', LogbookController::class);
     Route::get('/logbookslist', [LogbookController::class, 'getLogbookList'])->name('logbooks.list');
     Route::get('/InternAttendanceData', [AttendanceController::class, 'getInternAttendanceData'])->name('attendance.getdata');
-    Route::get('/reportAttendance', [AttendanceController::class, 'reportAttendancePage'])->name('attendance.report');
+    Route::post('/reportAttendance', [AttendanceController::class, 'reportAttendancePage'])->name('attendance.report');
+    Route::post('/exportAttendance', [AttendanceController::class, 'exportAttendance'])->name('attendance.export');
     Route::resource('attendance', AttendanceController::class);
     Route::resource('university', UniversityController::class);
     Route::resource('faculty', FacultyController::class);

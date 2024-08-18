@@ -59,9 +59,10 @@ class AttendanceService
      */
     public function getAttendancesForDateRange($id, $start_date, $end_date)
     {
-        return Attendance::where('intern_id', $id)
+        $attendances = Attendance::where('intern_id', $id)
                             ->whereBetween('date', [Carbon::parse($start_date), Carbon::parse($end_date)])
                             ->get();
+        return $attendances;
     }
 
 

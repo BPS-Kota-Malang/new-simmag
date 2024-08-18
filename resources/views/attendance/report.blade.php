@@ -6,27 +6,21 @@
 
     <div class="bg-white p-4 rounded-lg shadow-md">
         <h2 class="text-xl font-semibold text-gray-800">Filter Attendance</h2>
-        <form id="filter-form" method="POST" action="">
+        <form id="filter-form" method="POST" target="_blank" action="{{ route('attendance.export') }}">
             @csrf
             <div class="grid grid-cols-2 gap-4 mt-4">
                 <div>
-                    <label for="intern" class="block text-sm font-medium text-gray-700">Intern</label>
-                    <select id="intern" name="intern_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500">
-                        <option value="">Select Intern</option>
-                        @foreach($interns as $intern)
-                            <option value="{{ $intern->id }}">{{ $intern->name }}</option>
-                        @endforeach
-                    </select>
+                    <label for="start_date" class="block text-sm font-medium text-gray-700">Start Range</label>
+                    <input type="date" id="start_date" name="start_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500">
                 </div>
                 <div>
-                    <label for="date_range" class="block text-sm font-medium text-gray-700">Date Range</label>
-                    <input type="text" id="date_range" name="date_range" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500">
+                    <label for="end_date" class="block text-sm font-medium text-gray-700">End Range</label>
+                    <input type="date" id="end_date" name="end_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500">
                 </div>
-                <!-- Additional filters can be added here -->
             </div>
             <div class="mt-4 text-right">
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    Apply Filters and Export as PDF
+                <button type="submit"class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Export as PDF
                 </button>
             </div>
         </form>

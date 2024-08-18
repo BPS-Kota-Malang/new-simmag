@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Services\InternService;
 use App\Services\AttendanceService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class AttendanceController extends Controller
 {
@@ -224,7 +226,43 @@ class AttendanceController extends Controller
 
     public function reportAttendancePage()
     {   
-        return view('attendance.report');
+        $interns = $this->internService->getAllActiveInterns();
+
+        return view('attendance.report')->with(compact('interns'));
         // return view('attendance.report-maintenance');
+    }
+
+    public function exportAttendance(Request $request)
+    {   
+        $intern = $this->internService->getAuthIntern();
+        // dd($intern);
+        $start_date =  $request->start_date;
+        $end_date = $request->end_date;
+
+        $attendances = Attendance::where('intern_id', $intern->id)
+                            ->whereBetween('date', [Carbon::parse($start_date), Carbon::parse($end_date)])
+                            ->get();
+        
+        $pdf = Pdf::loadView('attendance.layout-attendance', compact('intern', 'attendances', 'start_date', 'end_date'));
+        
+        $pdf_filename = 'attendance_report'.'_'.$start_date.'-'.$end_date.'_'.$intern->name.'.pdf';
+        // $pdfPath = 'attendance_reports/attendance_report_' . $intern->name . time() . '.pdf';
+
+        // $fullPath = public_path($pdfPath);
+        // Storage::put($fullPath, $pdf->output());
+
+        // return redirect(Storage::url($pdfPath));
+
+        /**
+         *  Option #1 Return Download PDF
+         **/    
+        // return $pdf->download('attendance_report.pdf');
+
+        /**
+         *  Option #2 Serve the PDF as an inline response
+         * */
+        return response($pdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="' . $pdf_filename . '"');
     }
 }
