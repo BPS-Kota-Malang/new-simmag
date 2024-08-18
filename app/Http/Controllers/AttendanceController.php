@@ -56,10 +56,22 @@ class AttendanceController extends Controller
             ->with('todayAttendance', $todayAttendance);
     }
 
-    public function getInternAttendanceData()
+    public function getInternAttendanceData(Request $request)
     {
         $start_date = '2024-01-01';
         $end_date = Carbon::now()->format('Y-m-d');
+
+        $query = $this->attendanceService->query();
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('date', [$request->start_date, $request->end_date]);
+        }
+
+        if ($request->filled('search')) {
+            $query->whereHas('intern', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            });
+        }
         // $activeAttendances = $this->attendanceService-getAttendancesForDateRange($start_date, $end_date);
         $attendances = $this->attendanceService->getAllAttendancesForDateRange($start_date, $end_date);
         // $attendances = Attendance::all();
@@ -83,6 +95,8 @@ class AttendanceController extends Controller
         ->make(true);
         // ->toJson();
     }
+
+
     public function markAttendance(Request $request)
     {   
         $request->validate([
@@ -110,7 +124,9 @@ class AttendanceController extends Controller
         if (!$attendance)
         {
             $this->attendanceService->makeAttendanceLocation($internId, $date = $now, $workLocation = 'office');
-        } else {
+        } 
+        else 
+        {
             /**
              * Updating Checkin
              */
@@ -246,13 +262,7 @@ class AttendanceController extends Controller
         $pdf = Pdf::loadView('attendance.layout-attendance', compact('intern', 'attendances', 'start_date', 'end_date'));
         
         $pdf_filename = 'attendance_report'.'_'.$start_date.'-'.$end_date.'_'.$intern->name.'.pdf';
-        // $pdfPath = 'attendance_reports/attendance_report_' . $intern->name . time() . '.pdf';
-
-        // $fullPath = public_path($pdfPath);
-        // Storage::put($fullPath, $pdf->output());
-
-        // return redirect(Storage::url($pdfPath));
-
+       
         /**
          *  Option #1 Return Download PDF
          **/    
