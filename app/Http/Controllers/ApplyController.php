@@ -40,7 +40,11 @@ class ApplyController extends Controller
                 
         return DataTables::of($applies)
         ->addColumn('intern_name', function($apply) {
-            return $apply->intern->name;
+            // return $apply->intern->name;
+            return 
+            '<a href="'.route('interns.show', $apply->intern->id).'" class="text-blue-500 hover:underline">'
+                .$apply->intern->name.
+            '</a>';
         })
         ->addColumn('status', function($apply) {
             // return $apply->intern->work_status;
@@ -111,7 +115,7 @@ class ApplyController extends Controller
                     </a>
                 </td>';
         })
-        ->rawColumns(['status','actions','pengantar', 'proposal'])
+        ->rawColumns(['intern_name','status','actions','pengantar', 'proposal'])
         ->make(true);
         // ->toJson();
     }

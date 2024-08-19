@@ -30,4 +30,12 @@ class InternService
         return Intern::where('id', $internId)->first();
         // return $internId;
     }
+
+    /**
+     * Get Auth Intern
+     */
+    public function getSelectedIntern($internId)
+    {
+        return Intern::where('id', $internId)->first();
+    }
 }

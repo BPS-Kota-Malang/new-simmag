@@ -19,6 +19,7 @@ class Intern extends Model
         'faculty_id',
         'department_id',
         'phone',
+        'sex',
         'photo',
         'file_proposal',
         'file_suratpengantar',

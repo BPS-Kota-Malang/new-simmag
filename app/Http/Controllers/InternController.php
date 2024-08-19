@@ -184,9 +184,11 @@ class InternController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Intern $intern)
+    public function show($id)
     {
-        //
+        $intern = $this->internService->getSelectedIntern($id);
+        // return $intern;
+        return view('intern.profile')->with('intern', $intern);
     }
 
     /**
@@ -202,8 +204,10 @@ class InternController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($request);
         $request->validate([
             'name' => 'required|string|max:255',
+            'sex' => 'required',
             'phone' => 'nullable|string|max:255',
         ]);
 
@@ -211,6 +215,7 @@ class InternController extends Controller
         $intern->update([
             'name' => $request->input('name'),
             'phone' => $request->input('phone'),
+            'sex' => $request->input('sex'),
             // Update other fields as needed
         ]);
 

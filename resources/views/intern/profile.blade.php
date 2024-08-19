@@ -78,6 +78,16 @@
                         {{-- <input x-show="editMode" type="email" value="{{ $intern->user->email }}" class="mt-1 border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none w-full"> --}}
                     </div>
                     <div>
+                        <label class="font-semibold text-gray-600">Jenis Kelamin:</label>
+                        <p x-show="!editMode">{{ $intern->sex }}</p>
+                        <select x-show="editMode" name="sex" id="sex">
+                            <option value="Laki-Laki">Laki-Laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+
+                        {{-- <input x-show="editMode" type="email" value="{{ $intern->user->email }}" class="mt-1 border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none w-full"> --}}
+                    </div>
+                    <div>
                         <label class="font-semibold text-gray-600">Phone:</label>
                         <p x-show="!editMode">{{ $intern->phone }}</p>
                         <input x-show="editMode" name="phone" type="text" value="{{ old('phone', $intern->phone) }}" class="mt-1 border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none w-full">

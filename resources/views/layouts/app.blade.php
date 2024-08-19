@@ -61,7 +61,7 @@
         <div class="flex h-[100dvh] overflow-hidden">
             @include('layouts.navigation')
             @include('layouts.sidebar')
-                <main class="p-1 w-full md:ml-64 h-auto pt-4">
+                <main class="w-full md:ml-64 h-auto pt-4">
                     @yield('content')
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                         @csrf
