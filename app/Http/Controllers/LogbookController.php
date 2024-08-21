@@ -108,10 +108,12 @@ class LogbookController extends Controller
         $logbook = new Logbook();
         $logbook->intern_id = $intern_id;
         $logbook->division_id = $request->division_id;
+        $logbook->activity_id = $request->activity_id;
         $logbook->detail = $request->detail;
         $logbook->date = $formatedDate;
         $logbook->time_start = $request->time_start;
         $logbook->time_end = $request->time_end;
+        $logbook->completed = $request->is_completed;
         $logbook->save();
 
         return response()->json([

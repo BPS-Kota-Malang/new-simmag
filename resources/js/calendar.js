@@ -86,7 +86,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 $('#logbook-form').on('submit', function(event) {
                     event.preventDefault(); // Prevent the default form submission
 
+                    
                     var formData = $(this).serialize(); // Serialize form data
+                    
+                    // var isCompleted = $('#completedCheckbox').is(':checked') ? 1 : 0;
+                    // formData += '&is_completed=' + isCompleted;
 
                     $.ajax({
                         url: storeUrl,

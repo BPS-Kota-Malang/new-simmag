@@ -72,7 +72,7 @@
                       },
                       body: JSON.stringify({ 
                             name: this.searchQuery , 
-                            division_id: selectedDivisionId 
+                            division_id: selectedDivisionId ,
                         })
                   })
                   .then(response => {
