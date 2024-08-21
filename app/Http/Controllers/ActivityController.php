@@ -24,7 +24,11 @@ class ActivityController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $activities = Activity::where('name', 'LIKE', "%{$query}%")->get();
+        $divisionId = $request->input('division_id');
+        
+        $activities = Activity::where('name', 'LIKE', '%' . $query . '%')
+                          ->where('division_id', $divisionId)
+                          ->get();
         
         return response()->json($activities);
     }

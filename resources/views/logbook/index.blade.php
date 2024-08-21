@@ -38,7 +38,12 @@
               isItemSelected: false,
 
               searchItems() {
-                  fetch(`${searchUrl}?query=${this.searchQuery}`)
+                const divisionSelect = document.getElementById('division_id');
+                const selectedDivisionId = divisionSelect.value;
+                // Construct the URL with the query and division_id parameters
+                const url = `${searchUrl}?query=${this.searchQuery}&division_id=${selectedDivisionId}`;
+
+                  fetch(url)
                       .then(response => response.json())
                       .then(data => {
                           this.items = data;
