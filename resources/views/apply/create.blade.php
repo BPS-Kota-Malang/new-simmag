@@ -238,55 +238,55 @@
 
     <script>
         function searchableDropdown(name, searchUrl, addUrl) {
-    return {
-        searchQuery: '',
-        items: [],
-        selectedItemId: null,
-        isItemSelected: false,
+            return {
+                searchQuery: '',
+                items: [],
+                selectedItemId: null,
+                isItemSelected: false,
 
-        searchItems() {
-            fetch(`${searchUrl}?query=${this.searchQuery}`)
-                .then(response => response.json())
-                .then(data => {
-                    this.items = data;
-                    this.isItemSelected = false;
-                });
-        },
-
-        selectItem(item) {
-            this.searchQuery = item.name;
-            this.selectedItemId = item.id;
-            this.isItemSelected = true;
-            this.items = [];
-        },
-
-        addItem() {
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            fetch(addUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token
+                searchItems() {
+                    fetch(`${searchUrl}?query=${this.searchQuery}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            this.items = data;
+                            this.isItemSelected = false;
+                        });
                 },
-                body: JSON.stringify({ name: this.searchQuery })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+
+                selectItem(item) {
+                    this.searchQuery = item.name;
+                    this.selectedItemId = item.id;
+                    this.isItemSelected = true;
+                    this.items = [];
+                },
+
+                addItem() {
+                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                    fetch(addUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token
+                        },
+                        body: JSON.stringify({ name: this.searchQuery })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        this.selectedItemId = data.id;
+                        this.searchQuery = data.name;
+                        this.isItemSelected = true;
+                        this.items = [];
+                    })
+                    .catch(error => console.error('There has been a problem with your fetch operation:', error));
                 }
-                return response.json();
-            })
-            .then(data => {
-                this.selectedItemId = data.id;
-                this.searchQuery = data.name;
-                this.isItemSelected = true;
-                this.items = [];
-            })
-            .catch(error => console.error('There has been a problem with your fetch operation:', error));
+            }
         }
-    }
-}
 
 
     </script>

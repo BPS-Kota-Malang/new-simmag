@@ -61,12 +61,16 @@ document.addEventListener('DOMContentLoaded', function() {
         dateClick: function (info){
                 console.log("date:". info);
                 openModal(info.dateStr);
+        },
+        eventClick : function (info){
+            console.log(info.event.title);
+            // openModal(i);
         }
     })
 
     calendar.render();
     
-    function openModal(dateTime) {
+    function openModal( dateTime) {
         // AJAX request to load modal content
         $.ajax({
             url: createUrl,

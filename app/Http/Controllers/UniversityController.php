@@ -24,7 +24,6 @@ protected $universityService;
     {
         $query = $request->input('query');
         $universities = University::where('name', 'LIKE', "%{$query}%")->get();
-
         return response()->json($universities);
     }
 

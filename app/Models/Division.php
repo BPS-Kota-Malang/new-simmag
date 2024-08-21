@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Permission\Traits\HasRoles;
 
 class Division extends Model
@@ -19,6 +20,16 @@ class Division extends Model
         'name',
         'description',
     ];
+
+    public function logbook() : BelongsTo
+    {
+        return $this->belongsTo(Logbook::class);
+    }
+
+    public function intern() : BelongsTo
+    {
+        return $this->belongsTo(Intern::class);
+    }
 
 
 }

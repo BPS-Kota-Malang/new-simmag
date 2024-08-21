@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
-
+{{-- @section('script')
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs" ></script> 
+@endsection --}}
 @section('content')
 
 <div class="container mt-8 mx-auto py-10 px-4 space-y-8">
@@ -23,4 +26,67 @@
 
 @section('javascript')
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs" ></script> 
+    <script>
+      function searchableDropdown(name, searchUrl, addUrl) {
+          return {
+              searchQuery: '',
+              division_id: '',
+              items: [],
+              selectedItemId: null,
+              isItemSelected: false,
+
+              searchItems() {
+                  fetch(`${searchUrl}?query=${this.searchQuery}`)
+                      .then(response => response.json())
+                      .then(data => {
+                          this.items = data;
+                          this.isItemSelected = false;
+                      });
+              },
+
+              selectItem(item) {
+                  this.searchQuery = item.name;
+                  this.division_id = item.division_id;
+                  this.selectedItemId = item.id;
+                  this.isItemSelected = true;
+                  this.items = [];
+              },
+
+              addItem() {
+                  const divisionSelect = document.getElementById('division_id');
+                  const selectedDivisionId = divisionSelect.value;
+                  const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                  fetch(addUrl, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'X-CSRF-TOKEN': token
+                      },
+                      body: JSON.stringify({ 
+                            name: this.searchQuery , 
+                            division_id: selectedDivisionId 
+                        })
+                  })
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error('Network response was not ok');
+                      }
+                      return response.json();
+                  })
+                  .then(data => {
+                      this.selectedItemId = data.id;
+                      this.searchQuery = data.name;
+                      this.isItemSelected = true;
+                      this.items = [];
+                  })
+                  .catch(error => console.error('There has been a problem with your fetch operation:', error));
+              }
+          }
+      }
+
+
+  </script>
 @endsection

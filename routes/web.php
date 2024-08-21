@@ -1,25 +1,18 @@
 <?php
 
-use App\Http\Controllers\AdminApplyController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\ApplyController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialiteAuthController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InternController;
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\UniversityController;
-use App\Models\Department;
-use App\Models\Faculty;
-use App\Models\Logbook;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('university', UniversityController::class);
     Route::resource('faculty', FacultyController::class);
     Route::resource('department', DepartmentController::class);
+    Route::resource('activity', ActivityController::class);
+    Route::get('/searchActivity', [ActivityController::class, 'search'])->name('activity.search');
     Route::get('/searchUniversity', [UniversityController::class, 'search'])->name('university.search');
     Route::get('/searchFaculty', [FacultyController::class, 'search'])->name('faculty.search');
     Route::get('/searchDepartment', [DepartmentController::class, 'search'])->name('department.search');
