@@ -36,10 +36,10 @@ class LogbookController extends Controller
         $events = $logbooks->map(function ($logbook) {
             return [
                 'id' => $logbook->id,
-                'title' => $logbook->detail,
+                'title' => $logbook->activity->name,
                 'start' => $logbook->date . 'T' . $logbook->time_start,
                 'end' => $logbook->date . 'T' . $logbook->time_end,
-                'description' => $logbook->detail,
+                'detail' => $logbook->detail,
                 'backgroundColor' => $this->getEventColor($logbook), // Dynamic color
                 'borderColor' => $this->getEventColor($logbook),
                 'textColor' => '#ffffff',
@@ -132,17 +132,41 @@ class LogbookController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Logbook $logbook)
+    public function edit(logbook $logbook)
     {
-        //
+        // dd($logbook);
+        $logbook = $logbook;
+        $divisions = Division::all();
+        return view('logbook.modal', compact( 'divisions', 'logbook'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLogbookRequest $request, Logbook $logbook)
+    public function update(Request $request, Logbook $logbook)
     {
-        //
+        // Authorization check (ensure the user is authorized to update this logbook entry)
+    $this->authorize('update', $logbook);
+
+    // Validate the incoming request
+    $validated = $request->validate([
+        'date' => 'required|date',
+        'division_id' => 'required|exists:divisions,id',
+        'activity_id' => 'required|exists:activities,id',
+        'detail' => 'nullable|string',
+        'time_start' => 'required|date_format:H:i',
+        'time_end' => 'required|date_format:H:i|after:time_start',
+        'is_completed' => 'required|boolean',
+    ]);
+
+    // Update the logbook entry with the validated data
+    $logbook->update($validated);
+
+    // Return a JSON response for success
+    return response()->json([
+        'success' => true,
+        'message' => 'Logbook entry updated successfully!',
+    ]);
     }
 
     /**

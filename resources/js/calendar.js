@@ -10,7 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var modal = document.getElementById('logbookModal');
     var eventsUrl = calendarEl.getAttribute('data-events-url');
     var createUrl = modal.getAttribute('data-events-url');
+    var updateUrlBase = modal.getAttribute('data-patch-url');
     var storeUrl = modal.getAttribute('data-store-url');
+    var eventEditUrlBase = modal.getAttribute('data-event-edit-url');
+    // var isCompleted = document.getElementById('completedCheckbox');
 
     const calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -63,20 +66,73 @@ document.addEventListener('DOMContentLoaded', function() {
                 openModal(info.dateStr);
         },
         eventClick : function (info){
-            console.log(info.event.title);
-            // openModal(i);
+            var event = info.event;
+            // console.log(event);
+            // console.log(event.start.toLocaleTimeString());
+            // console.log(start_time);
+            var editUrl = `${eventEditUrlBase}/${event.id}/edit`;
+            var patchUrl = `${updateUrlBase}/${event.id}`;
+            $.ajax({
+                url : editUrl,
+                type : "GET",
+                success : function (response) {
+
+                    // Load the response into the modal
+                    document.getElementById('modal-content').innerHTML = response;
+
+                    // Show the modal
+                    modal.classList.remove('hidden');
+
+                    $('#logbook-form').on('submit', function(event) {
+                        event.preventDefault(); // Prevent the default form submission
+    
+                        
+                        var formData = $(this).serialize(); // Serialize form data
+                        
+                        var isCompletedCheckbox = $('#completedCheckbox');
+                        console.log('Checkbox Element:', isCompletedCheckbox);
+                        
+                        var isCompleted = isCompletedCheckbox.is(':checked') ? 1 : 0;
+                        formData += '&is_completed=' + isCompleted;
+    
+                        $.ajax({
+                            url: patchUrl,
+                            type: 'PATCH',
+                            data: formData,
+                            success: function(response) {
+                                if (response.errors) {
+                                    // Handle validation errors
+                                    console.log(response.errors);
+                                    // Display errors in the modal or elsewhere
+                                } else if (response.success) {
+                                    // Handle successful submission
+                                    console.log(response.success);
+                                    // Close the modal and/or update the UI as needed
+                                    $('#logbookModal').addClass('hidden');
+                                    calendar.refetchEvents();
+                                }
+                            },
+                            error: function(xhr) {
+                                console.error('Error:', xhr.responseText);
+                            }
+                        });
+                    });
+                },
+                
+            })
         }
     })
 
     calendar.render();
     
-    function openModal( dateTime) {
+    function openModal(dateTime) {
         // AJAX request to load modal content
         $.ajax({
             url: createUrl,
             type: "GET",
             data: { date: dateTime  },
             success: function(response) {
+                // console.log('Response:', response);
                 // Load the response into the modal
                 document.getElementById('modal-content').innerHTML = response;
 
@@ -89,8 +145,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     var formData = $(this).serialize(); // Serialize form data
                     
-                    // var isCompleted = $('#completedCheckbox').is(':checked') ? 1 : 0;
-                    // formData += '&is_completed=' + isCompleted;
+                    var isCompletedCheckbox = $('#completedCheckbox');
+                        console.log('Checkbox Element:', isCompletedCheckbox);
+                        
+                    var isCompleted = isCompletedCheckbox.is(':checked') ? 1 : 0;
+                    formData += '&is_completed=' + isCompleted;
 
                     $.ajax({
                         url: storeUrl,

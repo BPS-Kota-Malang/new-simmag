@@ -37,7 +37,17 @@ class LogbookPolicy
      */
     public function update(User $user, Logbook $logbook): bool
     {
-        //
+        // Example 2: Check if the user has a specific role
+        if ($user->hasRole('superadmin')) {
+            return true;
+        }
+
+        // Example 3: Check if the user is the owner of the logbook
+        if ($user->intern->id === $logbook->intern_id) {
+            return true;
+        }
+
+        return false; 
     }
 
     /**

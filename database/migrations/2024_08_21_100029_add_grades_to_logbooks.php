@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('logbooks', function (Blueprint $table) {
-            //
+            $table->unsignedInteger('grade')->nullable()->after('completed')->comment('Grade from 1 to 100');            
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('logbooks', function (Blueprint $table) {
-            //
+            $table->dropColumn('grade');
         });
     }
 };
