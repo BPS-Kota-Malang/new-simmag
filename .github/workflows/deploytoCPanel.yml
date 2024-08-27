@@ -30,9 +30,6 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
 
-      - name: Run migrations
-        run: php artisan migrate --force
-
       - name: Deploy to cPanel
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:

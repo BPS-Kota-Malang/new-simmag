@@ -91,6 +91,7 @@ class LogbookController extends Controller
         $validator = Validator::make($request->all(), [
             'date' => 'required|date',
             'division_id' => 'required',
+            'activity_id' => 'required',
             'detail' => 'required|string',
             'time_start' => 'required',
             'time_end' => 'required',
@@ -147,7 +148,7 @@ class LogbookController extends Controller
     {
         // Authorization check (ensure the user is authorized to update this logbook entry)
     $this->authorize('update', $logbook);
-
+        
     // Validate the incoming request
     $validated = $request->validate([
         'date' => 'required|date',

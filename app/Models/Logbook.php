@@ -19,6 +19,7 @@ class Logbook extends Model
         'detail',
         'activity_id',
         'status',
+        'grade',
     ];
 
     public function activity() : BelongsTo
