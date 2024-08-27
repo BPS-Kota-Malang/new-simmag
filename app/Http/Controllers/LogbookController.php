@@ -36,7 +36,7 @@ class LogbookController extends Controller
         $events = $logbooks->map(function ($logbook) {
             return [
                 'id' => $logbook->id,
-                'title' => $logbook->activity->name,
+                'title' => isset($logbook->activity->name) ? $logbook->activity->name : "",
                 'start' => $logbook->date . 'T' . $logbook->time_start,
                 'end' => $logbook->date . 'T' . $logbook->time_end,
                 'detail' => $logbook->detail,
@@ -103,7 +103,7 @@ class LogbookController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-
+        
         $formatedDate = Carbon::parse($request->date)->format('Y-m-d');
         // Create a new logbook entry
         $logbook = new Logbook();
