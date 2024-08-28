@@ -67,21 +67,29 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         eventClick : function (info){
             var event = info.event;
-            // console.log(event);
+            console.log(event);
             // console.log(event.start.toLocaleTimeString());
             // console.log(start_time);
+
+
             var editUrl = `${eventEditUrlBase}/${event.id}/edit`;
             var patchUrl = `${updateUrlBase}/${event.id}`;
             $.ajax({
                 url : editUrl,
                 type : "GET",
                 success : function (response) {
-
+                    console.log(response);
                     // Load the response into the modal
-                    document.getElementById('modal-content').innerHTML = response;
-
+                    // document.getElementById('modal-content').innerHTML = response;
+                    // If response is an element (e.g., a textarea element)
+                    if (response instanceof HTMLElement) {
+                        document.getElementById('modal-content').innerHTML = response.innerHTML;
+                    } else {
+                        document.getElementById('modal-content').innerHTML = response;
+}
                     // Show the modal
                     modal.classList.remove('hidden');
+                    document.getElementById('delete-event').classList.remove('hidden');
 
                     $('#logbook-form').on('submit', function(event) {
                         event.preventDefault(); // Prevent the default form submission
@@ -117,6 +125,33 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         });
                     });
+
+                    // Handle the delete button click event
+            $('#delete-event').off('click').on('click', function() {
+                var deleteUrl = `${eventEditUrlBase}/${event.id}`;
+                if (confirm('Are you sure you want to delete this event?')) {
+                    $.ajax({
+                        url: deleteUrl, // Replace with your actual delete endpoint
+                        type: 'DELETE',
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content') // Include CSRF token for security
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Remove the event from the calendar
+                                event.remove();
+                                document.getElementById('logbookModal').classList.add('hidden');
+                                calendar.refetchEvents(); // Hide the modal
+                            } else {
+                                alert('Failed to delete the event. Please try again.');
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error('Error:', xhr.responseText);
+                        }
+                    });
+                }
+            });
                 },
                 
             })
@@ -138,6 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Show the modal
                 modal.classList.remove('hidden');
+                // Show the delete button since this is an edit
 
                 $('#logbook-form').on('submit', function(event) {
                     event.preventDefault(); // Prevent the default form submission

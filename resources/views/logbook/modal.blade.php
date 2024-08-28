@@ -83,14 +83,13 @@
 
         <div class="mb-4">
             <label for="detail" class="block text-sm font-medium">Detail</label>
-            <textarea 
+            <input 
                 id="detail" 
                 name="detail" 
-                x-model="detail"
-                rows="4" 
                 class="form-control mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+                value="{{ isset($logbook) && $logbook ? trim($logbook->detail) : '' }}"
             >
-            </textarea>
+            </input>
         </div>
         
         <div class="mb-4 flex space-x-4">
@@ -134,6 +133,21 @@
             <label for="completedCheckbox" class="ms-2 text-sm font-medium text-gray-900">Kegiatan Sudah Selesai</label>
         </div>
         
-        <button type="submit" class="w-full py-2 mt-4 bg-blue-500 text-white rounded">Save Logbook</button>
+        <div class="px-4 py-3 bg-gray-50 text-right">
+            <button 
+              type="button" 
+              id="delete-event" 
+              class="btn btn-danger bg-red-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 hidden"
+            >
+              Delete Event
+            </button>
+            <button 
+              type="submit" 
+              id="save-event" 
+              class="bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Save Logbook
+            </button>
+        </div>
     </form>
         </div>

@@ -175,6 +175,18 @@ class LogbookController extends Controller
      */
     public function destroy(Logbook $logbook)
     {
-        //
+        try {
+            $logbook->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Event deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete the event'
+            ], 500);
+        }
     }
 }
