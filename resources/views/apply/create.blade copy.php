@@ -29,15 +29,9 @@
         <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 max-w-4xl w-full">
             <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Pendaftaran Magang</h2>
             <form action="{{ route('interns.store') }}" method="POST" enctype="multipart/form-data">
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                {{-- @if ($errors)
+                    {{ dd($errors) }}
+                @endif --}}
                 @csrf
                 <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                     <div class="w-full">
@@ -173,7 +167,7 @@
                         </div>
                         <div x-text="'Items: ' + items.length + ', Query: ' + searchQuery"></div>
                     </div>
-                <div class="grid grid-cols-1 sm:col-span-2">
+
                     <div class="w-full">
                         <label for="photo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Silahkan Unggah Foto Formal</label>
                         <input type="file" id="photo" name="photo" class="block w-full mb-4">
@@ -183,9 +177,9 @@
                     </div>
                     
                     <div class="w-full">
-                        <label for="file_proposal" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Silahkan  Unggah CV / Proposal</label>
-                        <input type="file" id="file_proposal" name="file_proposal" class="block w-full mb-4">
-                        @error('file_proposal')
+                        <label for="file_suratpengantar" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Silahkan  Unggah CV / Proposal</label>
+                        <input type="file" id="file_suratpengantar" name="file_suratpengantar" class="block w-full mb-4">
+                        @error('file_suratpengantar')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
@@ -196,7 +190,6 @@
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
-                </div>
                     <div class="w-full">
                         <label for="start_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Silahkan Pilih Tanggal Mulai</label>
                         

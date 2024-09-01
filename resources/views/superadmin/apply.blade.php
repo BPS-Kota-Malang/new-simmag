@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="relative overflow-x-auto overflow-y-auto shadow-md sm:rounded-lg">
             <table id="intern-applicant-table" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -25,6 +25,7 @@
                         <th scope="col" class="px-6 py-3">Jurusan</th>
                         <th scope="col" class="px-6 py-3">File Proposal</th>
                         <th scope="col" class="px-6 py-3">File Pengantar</th>
+                        <th scope="col" class="px-6 py-3">Tanggal Pendaftaran Magang</th>
                         <th scope="col" class="px-6 py-3">Tanggal Pengajuan Magang</th>
                         <th scope="col" class="px-6 py-3">Tanggal Magang</th>
                         <th scope="col" class="px-6 py-3">Action</th>
@@ -99,6 +100,7 @@ $(document).ready(function() {
             { data: 'department', name: 'department' },
             { data: 'proposal', name: 'proposal' },
             { data: 'pengantar', name: 'pengantar' },
+            { data: 'registration_date', name: 'registration_date' },
             { data: 'apply_date', name: 'apply_date', className: 'text-center' },
             { data: 'answer_date', name: 'answer_date' , className: 'text-center'},
             { data: 'actions', name: 'actions', orderable: false, searchable: false }

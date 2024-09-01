@@ -13,10 +13,16 @@ class InternService
         return Intern::all();
     }
 
-    public function getAllActiveInterns()
+    public function getAllActiveInterns($divisionId = null)
     {
         // Fetch data from the database
-        return Intern::where('work_status', 'accepted')->get();
+        $query = Intern::where('work_status', 'accepted');
+
+        if ($divisionId) {
+            $query->where('division_id', $divisionId);
+        }
+
+        return $query->get();
     }
 
     /**

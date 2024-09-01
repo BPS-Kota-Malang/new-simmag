@@ -6,11 +6,15 @@ use App\Models\Apply;
 use App\Models\Intern;
 use App\Http\Requests\StoreApplyRequest;
 use App\Http\Requests\UpdateApplyRequest;
+use App\Mail\ApplicantMail;
+use App\Mail\RegistrationMail;
 use App\Models\University;
 use App\Services\InternService;
 use App\Services\UniversityService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
 
@@ -89,6 +93,10 @@ class ApplyController extends Controller
                 '<a href="'.Storage::url($apply->intern->file_suratpengantar).'" target="_blank" class="text-blue-500 hover:underline">
                     Open Surat Pengantar
                 </a>';
+        })
+        ->addColumn('registration_date', function($apply) {
+            return Carbon::parse($apply->created_at)->format('Y-m-d');
+            
         })
         ->addColumn('apply_date', function($apply) {
             return $apply->start_date_apply . ' s.d. ' . $apply->end_date_apply;
@@ -174,7 +182,19 @@ class ApplyController extends Controller
 
         // dd($validatedData);
 
+        $intern = $apply->intern;
+
+        if ($intern->work_status != "on progress")
+        {
+            $intern->update(
+                [
+                    'work_status' => 'on progress'
+                ]
+            );
+        }
         $apply->update($validatedData);
+
+        $this->sentChangesDateEmail($apply);
 
         return redirect()->route('apply.index')->with('success', 'Apply updated successfully!');
     }
@@ -221,7 +241,7 @@ class ApplyController extends Controller
     public function rejected (Request $request)
     {
         $intern = Intern::find($request->id);
-        
+        $apply = Apply::where('intern_id', $intern->id)->first();
         $intern->update(
             [
                 'work_status' => 'rejected'
@@ -231,7 +251,15 @@ class ApplyController extends Controller
         $intern->user->removeRole('Intern');
         $intern->user->assignRole('User');
 
+        $this->sentChangesDateEmail($apply);
+
         return redirect()->route('dashboard')->with('success', 'Status updated successfully!');
 
+    }
+
+    public function sentChangesDateEmail (Apply $apply)
+    {
+        // Send email notification
+        Mail::to($apply->intern->user->email)->send(new ApplicantMail($apply));
     }
 }

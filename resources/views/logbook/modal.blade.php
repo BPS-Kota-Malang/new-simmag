@@ -121,6 +121,11 @@
                 value="{{ isset($formattedTimeEnd) ? $formattedTimeEnd : '' }}">
             </div>
         </div>
+        <div class="mb-4 flex space-x-4"> Grade : 
+            @if (isset($logbook) && $logbook  && $logbook->grade)
+                {{ $logbook->grade}}
+            @endif
+        </div>
         <div class="flex items-right mb-4" x-data="{ isCompleted: false }">
             <input 
                 id="completedCheckbox" 
@@ -132,7 +137,6 @@
             >
             <label for="completedCheckbox" class="ms-2 text-sm font-medium text-gray-900">Kegiatan Sudah Selesai</label>
         </div>
-        
         <div class="px-4 py-3 bg-gray-50 text-right">
             <button 
               type="button" 

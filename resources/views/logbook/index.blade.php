@@ -6,8 +6,31 @@
 @endsection --}}
 @section('content')
 
-<div class="container mt-8 mx-auto py-10 px-4 space-y-8">
-    <div id="calendar" data-events-url="{{ route('logbooks.list') }}"></div>
+<div class="container mt-8 mx-auto py-10 px-4 space-y-8" >
+    @if ( Auth::user()->hasRole('Super Admin') )
+        <!-- Your calendar and filter UI here -->
+        <div class="container mx-auto mt-6">
+            <div class="flex items-center justify-between">
+                <div class="w-1/3">
+                    <label for="internFilter" class="block text-sm font-medium text-gray-700">Select Intern</label>
+                    <select id="internFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="">Loading...</option>
+                    </select>
+                </div>
+                <div class="ml-4">
+                    <button id="applyFilter" class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Apply Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+    <div    id="calendar" 
+            data-events-url="{{ route('logbooks.list') }}"
+            data-intern-url="{{ route('api.intern.active') }}"
+            data-division-url="{{ route('api.division') }}"
+    >
+    </div>
 </div>
 
 <!-- Modal -->
@@ -18,7 +41,7 @@
         <!-- Content will be loaded here via AJAX -->
       </div>
     </div>
-  </div>
+</div>
 
 @vite('resources/js/calendar.js')
   

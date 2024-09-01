@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Mail\RegistrationMail;
 use App\Http\Controllers\AdminAttendanceController;
 use App\Http\Controllers\ApplyController;
 use App\Http\Controllers\SocialiteAuthController;
@@ -10,9 +11,12 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InternController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\UniversityController;
+use App\Models\Division;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +28,14 @@ use App\Http\Controllers\UniversityController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/send-test-email', function () {
+    $user= Auth::user();
+
+    // Send email notification
+    Mail::to($user->email)->send(new RegistrationMail($user->intern));
+
+    return 'Email sent!';
+});
 
 Route::get('/', function () {
     // Check if the user is logged in
@@ -42,7 +54,10 @@ Route::get('/privacy-policy', function () {
 Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/sentRegistrationEmail/{intern}', [InternController::class, 'sentRegistrationEmail'])->name('admin.sentRegistrationEmail');
     Route::resource('interns', InternController::class);
+    Route::get('/api/interns/active', [InternController::class, 'getActiveInterns'])->name('api.intern.active');
+    Route::get('/api/division', [DivisionController::class, 'getDivision'])->name('api.division');
     Route::post('/intern/updatephoto', [InternController::class, 'updatePhotoProfile'])->name('update_photo');
     Route::patch('/apply/{apply}', [ApplyController::class, 'update'])->name('apply.update');
     Route::resource('apply', ApplyController::class);
@@ -69,6 +84,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/markattendance', [AttendanceController::class, 'markAttendance'])->name('attendance.mark');
     Route::get('/apply/accepted/{id}', [ApplyController::class, 'accepted'])->name('apply.accepted');
     Route::get('/apply/rejected/{id}', [ApplyController::class, 'rejected'])->name('apply.rejected');
+
+
+    
     Route::post('/logout', function () {
         Auth::logout();
         return redirect('/login'); // Redirect to the login page or any other page

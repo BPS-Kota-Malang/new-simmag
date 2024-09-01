@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\RegistrationMail;
 use App\Models\Intern;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,10 +16,12 @@ use App\Models\Apply;
 use App\Models\Division;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
+use Illuminate\Validation\ValidationException;
+use PhpParser\Node\Stmt\TryCatch;
 
 class InternController extends Controller
 {   
@@ -40,6 +43,13 @@ class InternController extends Controller
         $intern = $this->internService->getAuthIntern();
         // return $intern;
         return view('intern.profile')->with('intern', $intern);
+    }
+
+    public function getActiveInterns()
+    {
+        $intern = $this->internService->getAllActiveInterns();
+
+        return response()->json($intern);
     }
 
     public function statusIntern ($user)
@@ -111,74 +121,105 @@ class InternController extends Controller
      */
     public function store(Request $request)
     {   
-        $user = Auth::user();  
-        /**
-         * Validate $request from frontend
-         */
-        // dd($request);
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'nim' => 'required|string|max:20',
-            'university_id' => 'required',
-            'faculty_id' => 'required',
-            'department_id' => 'required',
-            'phone' => 'required|string|max:20',
-            'file_proposal' => 'required|file|mimes:pdf,doc,docx',
-            'file_suratpengantar' => 'required|file|mimes:pdf,doc,docx',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-        ]);
+        try {
+            $user = Auth::user();  
         
-         // Create Carbon instances from the request dates
-        $formattedStartDate = Carbon::parse($request->input('start_date'))->format('Y-m-d');
-        $formattedEndDate = Carbon::parse($request->input('end_date'))->format('Y-m-d');
-        
-        // Create and save the intern with formatted dates
-        $intern = new Intern();
-        $intern->name = $request->input('name');
-        $intern->nim = $request->input('nim');
-        $intern->phone = $request->input('phone');
-        $intern->university_id = $request->input('university_id');
-        $intern->faculty_id = $request->input('faculty_id');
-        $intern->department_id = $request->input('department_id');
-        $intern->start_date = $formattedStartDate;
-        $intern->end_date = $formattedEndDate;
-        $intern->user_id = Auth::user()->id;
-        $intern->work_status = 'on progress';
-        $intern->division_id = Division::where('name', 'Sub Bagian Umum')->pluck('id')->first();
+            /**
+             * Validate $request from frontend
+             */
+            // dd($request);
 
-        // $intern->save();
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'nim' => 'required|string|max:20',
+                'university_id' => 'required',
+                'faculty_id' => 'required',
+                'department_id' => 'required',
+                'phone' => 'required|string|max:20',
+                'file_proposal' => 'required|file|mimes:pdf,doc,docx',
+                'photo' => 'required|file|mimes:jpeg,png',
+                'file_suratpengantar' => 'required|file|mimes:pdf,doc,docx',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+            
+            // Create Carbon instances from the request dates
+            $formattedStartDate = Carbon::parse($request->input('start_date'))->format('Y-m-d');
+            $formattedEndDate = Carbon::parse($request->input('end_date'))->format('Y-m-d');
+            
+            // Create and save the intern with formatted dates
+            $intern = new Intern();
+            $intern->name = $request->input('name');
+            $intern->nim = $request->input('nim');
+            $intern->phone = $request->input('phone');
+            $intern->university_id = $request->input('university_id');
+            $intern->faculty_id = $request->input('faculty_id');
+            $intern->department_id = $request->input('department_id');
+            $intern->start_date = $formattedStartDate;
+            $intern->end_date = $formattedEndDate;
+            $intern->user_id = Auth::user()->id;
+            $intern->work_status = 'on progress';
+            $intern->division_id = Division::where('name', 'Sub Bagian Umum')->pluck('id')->first();
 
-        if ($request->hasFile('file_proposal')) {
-            $intern->file_proposal = $request->file('file_proposal')->store('proposals', 'public');
+            // $intern->save();
+
+            if ($request->hasFile('photo')) {
+                // This is for a new photo upload (first time)
+                $originalName = $request->file('photo')->getClientOriginalName();
+                $extension = $request->file('photo')->getClientOriginalExtension();
+                
+                $month = Carbon::parse($intern->start_date)->format('Ym');
+                
+                // Create a unique filename using the month, university name, and the original filename
+                $filename = $month. '_' . Str::slug($intern->university->name) . '_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $extension;
+                
+                // Store the file in the 'profile_photos' directory in the 'public' disk
+                $path = $request->file('photo')->storeAs('profile_photos', $filename, 'public');
+                
+                // Assign the path to the intern's photo attribute
+                $intern->photo = $path;
+            }
+
+            if ($request->hasFile('file_proposal')) {
+                $intern->file_proposal = $request->file('file_proposal')->store('proposals', 'public');
+            }
+
+            if ($request->hasFile('file_suratpengantar')) {
+                $intern->file_suratpengantar = $request->file('file_suratpengantar')->store('suratpengantar', 'public');
+            }
+
+            $intern->save();
+
+            /**
+             *  Create New Apply Record
+             */
+            $applies = Apply::create(
+                [
+                    'intern_id' => $intern->id,
+                    'start_date_apply' => $formattedStartDate,
+                    'end_date_apply' => $formattedEndDate,
+                ]
+            );
+            
+            // $internData = Intern::find($)
+            // $user->drop
+            $user->assignRole("Applicant");
+
+            // Send email notification
+            Mail::to($user->email)->send(new RegistrationMail($intern));
+            // dd ($intern); 
+            return redirect()->route('dashboard')
+                ->with('success', 'Applicant created successfully and email Sent.');
+        } catch (ValidationException  $e) {
+             // Log the exception
+                Log::error('Error creating applicant: ' . $e->getMessage());
+
+                // Redirect with error message
+                return redirect()->back()
+                    ->withErrors(['error' => 'An error occurred while creating the applicant. Please try again.'])
+                    ->withInput();
+
         }
-
-        if ($request->hasFile('file_suratpengantar')) {
-            $intern->file_suratpengantar = $request->file('file_suratpengantar')->store('suratpengantar', 'public');
-        }
-
-        $intern->save();
-
-        /**
-         *  Create New Apply Record
-         */
-        $applies = Apply::create(
-            [
-                'intern_id' => $intern->id,
-                'start_date_apply' => $formattedStartDate,
-                'end_date_apply' => $formattedEndDate,
-            ]
-        );
-        
-        // $internData = Intern::find($)
-        // $user->drop
-        $user->assignRole("Applicant");
-
-        // dd ($intern); 
-        return redirect()->route('dashboard')
-            ->with('success', 'Applicant created successfully.');
-
     }
 
     /**
@@ -229,4 +270,13 @@ class InternController extends Controller
     {
         //
     }
+
+
+    public function sentRegistrationEmail (Intern $intern)
+    {
+        // Send email notification
+        Mail::to($intern->user->email)->send(new RegistrationMail($intern));
+    }
+
+    
 }

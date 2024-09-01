@@ -11,6 +11,8 @@ use Illuminate\Support\Carbon;
 // use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class LogbookController extends Controller
 {
@@ -24,28 +26,54 @@ class LogbookController extends Controller
 
     public function getLogbookList(Request $request)
     {
-        // dd($request);
+        $user = Auth::user();
         $start = date('Y-m-d', strtotime($request->start));
         $end = date('Y-m-d', strtotime($request->end));
 
-        $logbooks = Logbook::whereBetween('date', [$start, $end])
+
+        if ($user->hasRole('Super Admin')){
+            $logbooks = Logbook::whereBetween('date', [$start, $end])
+            ->get();
+             // Format the logbooks for FullCalendar
+             $events = $logbooks->map(function ($logbook) {
+                return [
+                    'id' => $logbook->id,
+                    'title' => isset($logbook->activity->name) ? $logbook->activity->name : "",
+                    'start' => $logbook->date . 'T' . $logbook->time_start,
+                    'end' => $logbook->date . 'T' . $logbook->time_end,
+                    'detail' => $logbook->detail,
+                    'grade' => $logbook->grade,
+                    'backgroundColor' => $this->getEventColor($logbook), // Dynamic color
+                    'borderColor' => $this->getEventColor($logbook),
+                    'textColor' => '#ffffff',
+                    'allDay' => false, // Optional: set text color
+                ];
+            });
+        } 
+        else if ( $user->hasRole('Intern'))
+        {
+            $logbooks = Logbook::whereBetween('date', [$start, $end])
                         ->where('intern_id', Auth::user()->intern->id)
                         ->get();
         
-        // Format the logbooks for FullCalendar
-        $events = $logbooks->map(function ($logbook) {
-            return [
-                'id' => $logbook->id,
-                'title' => isset($logbook->activity->name) ? $logbook->activity->name : "",
-                'start' => $logbook->date . 'T' . $logbook->time_start,
-                'end' => $logbook->date . 'T' . $logbook->time_end,
-                'detail' => $logbook->detail,
-                'backgroundColor' => $this->getEventColor($logbook), // Dynamic color
-                'borderColor' => $this->getEventColor($logbook),
-                'textColor' => '#ffffff',
-                'allDay' => false, // Optional: set text color
-            ];
-        });
+            // Format the logbooks for FullCalendar
+            $events = $logbooks->map(function ($logbook) {
+                return [
+                    'id' => $logbook->id,
+                    'title' => isset($logbook->activity->name) ? $logbook->activity->name : "",
+                    'start' => $logbook->date . 'T' . $logbook->time_start,
+                    'end' => $logbook->date . 'T' . $logbook->time_end,
+                    'detail' => $logbook->detail,
+                    'grade' => $logbook->grade,
+                    'backgroundColor' => $this->getEventColor($logbook), // Dynamic color
+                    'borderColor' => $this->getEventColor($logbook),
+                    'textColor' => '#ffffff',
+                    'allDay' => false, // Optional: set text color
+                ];
+            });
+        }
+        
+        
 
         return response()->json($events);
     }

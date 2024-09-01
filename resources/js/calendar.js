@@ -6,14 +6,59 @@ import interactionPlugin from '@fullcalendar/interaction';
 
 // Ensure the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
+
+    
+    
     var calendarEl = document.getElementById('calendar');
+    var internUrl = calendarEl.getAttribute('data-intern-url');
+    var divisionUrl = calendarEl.getAttribute('data-division-url');
     var modal = document.getElementById('logbookModal');
     var eventsUrl = calendarEl.getAttribute('data-events-url');
     var createUrl = modal.getAttribute('data-events-url');
     var updateUrlBase = modal.getAttribute('data-patch-url');
     var storeUrl = modal.getAttribute('data-store-url');
     var eventEditUrlBase = modal.getAttribute('data-event-edit-url');
-    // var isCompleted = document.getElementById('completedCheckbox');
+    
+    // Fetch intern options via AJAX
+    $.ajax({
+        url: internUrl, // Replace with your actual endpoint to fetch interns
+        method: 'GET',
+        success: function(data) {
+            console.log('Response Data:', data)
+            var internFilter = document.getElementById('internFilter');
+            internFilter.innerHTML = ''; // Clear current options
+            data.forEach(function(intern) {
+                var option = document.createElement('option');
+                option.value = intern.id;
+                option.textContent = intern.name;
+                internFilter.appendChild(option);
+            });
+        },
+        error: function() {
+            console.error('Failed to load interns');
+        }
+    });
+
+    // Fetch Division options via AJAX
+    $.ajax({
+        url: internUrl, // Replace with your actual endpoint to fetch interns
+        method: 'GET',
+        success: function(data) {
+            console.log('Response Data:', data)
+            var internFilter = document.getElementById('internFilter');
+            internFilter.innerHTML = ''; // Clear current options
+            data.forEach(function(intern) {
+                var option = document.createElement('option');
+                option.value = intern.id;
+                option.textContent = intern.name;
+                internFilter.appendChild(option);
+            });
+        },
+        error: function() {
+            console.error('Failed to load interns');
+        }
+    });
+
 
     const calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
