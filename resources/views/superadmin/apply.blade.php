@@ -38,8 +38,8 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div id="crud-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <!-- Modal Reject Causes -->
+    <div id="reject-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 flex items-center justify-center z-50 hidden">
         <div class="relative w-full max-w-lg mx-auto bg-white rounded-lg shadow-lg">
             <div class="p-4 border-b">
                 <h3 class="text-lg font-semibold text-gray-900">Edit Tanggal Pengajuan</h3>
@@ -76,6 +76,27 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal Edit Date -->
+    <!-- Reject Modal -->
+    <div id="reject-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white p-5 rounded-lg shadow-lg w-1/3">
+            <h2 class="text-xl font-bold mb-4">Reject Application</h2>
+            <form action="{{ route('apply.rejected') }}" method="POST">
+                @csrf
+                <input type="hidden" name="apply_id" value="">
+                <div class="mb-4">
+                    <label for="rejection_cause" class="block text-gray-700">Cause of Rejection:</label>
+                    <textarea name="rejection_cause" id="rejection_cause" rows="4" class="w-full p-2 border border-gray-300 rounded-lg"></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="close-modal bg-gray-400 text-white px-4 py-2 rounded mr-2">Cancel</button>
+                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Reject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
 </div>
 @endsection

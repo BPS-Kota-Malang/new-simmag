@@ -43,6 +43,7 @@ class HomeController extends Controller
                     ->with('countMen', $countMen)
                     ->with('countWomen', $countWomen)
                     ->with('countActiveInterns', $countActiveInterns);
+                    
             case 'Subbag Umum':
                 $activeInterns = $this->internService->getAllActiveInterns();
                 $countActiveInterns = count($this->internService->getAllActiveInterns());

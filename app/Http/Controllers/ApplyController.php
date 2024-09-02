@@ -118,7 +118,7 @@ class ApplyController extends Controller
                     <a href="'.route('apply.accepted', ['id' => $apply->intern->id]).'" class="text-green-600 hover:text-green-800 mx-2">
                         <i class="fa fa-check-square"></i>
                     </a>
-                    <a href="'.route('apply.rejected', ['id' => $apply->intern->id]).'" class="text-red-600 hover:text-red-800">
+                    <a href="#" data-id="'.$apply->intern->id.'" class="text-blue-600 hover:text-blue-800 edit-btn" data-modal-target="reject-modal">
                         <i class="fa fa-close"></i>
                     </a>
                 </td>';
@@ -167,14 +167,13 @@ class ApplyController extends Controller
         return view('superadmin.apply', compact('apply'));  // Pass the single record to the view
     }
 
+
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Apply $apply)
     {   
-        // $apply = Apply::find($apply);
-
-                // Validate incoming request data if necessary
+        
         $validatedData = $request->validate([
             'start_date_answer' => 'required|date',
             'end_date_answer' => 'required|date',
