@@ -33,7 +33,7 @@
           </div>
         </form>
         <ul class="space-y-2">
-         @if (Auth::user()->hasRole('Super Admin'))
+         @if (Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Subbag Umum') )
           <li>
             <a
               href="#"

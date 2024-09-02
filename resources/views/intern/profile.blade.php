@@ -20,7 +20,7 @@
 </style>
 @endsection
 @section('content')
-
+        
         <div class="container mx-auto p-8" x-data="{ editMode: false }">
             @if ($errors->any())
                 <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
@@ -37,29 +37,64 @@
                     {{ session('status') }}
                 </div>
             @endif
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <div class="flex flex-col md:flex-row items-center">
-                    <div x-show="!editMode" class="profile-photo-container flex items-center mt-2">
-                        <img class="w-40 h-40 md:w-48 md:h-48 rounded-full fit overflow-hidden border-4 border-gray-300" src="{{ Storage::url($intern->photo) }}" alt="Profile Photo">
-                    </div>
-                    <div x-show="editMode" class="mt-2">
-                        <form action="{{ route('update_photo') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="file" name="photo" accept="image/*" class="mt-1 border rounded-lg p-2">
-                            <button type="submit" class="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none">Upload</button>
-                        </form>
-                    </div>
-                    <div class="md:ml-8 mt-6 md:mt-0 text-center md:text-left">
-                        <h2 class="text-2xl font-semibold text-gray-800">{{ $intern->name }}</h2>
-                        <p class="text-gray-600">{{ $intern->user->email }}</p>
-                        <button @click="editMode = !editMode" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none">
-                            <span x-show="!editMode">Edit Profile</span>
-                            <span x-show="editMode">Cancel</span>
-                        </button>
-                    </div>
-                </div>
+            <div class="w-full border-b border-gray-200">
+                <ul class="flex mb-0 list-none flex-wrap pb-4 flex-row" role="tablist">
+                    <li class="mr-2 last:mr-0 flex-auto text-center">
+                        <a class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-blue-600 bg-white" 
+                        data-toggle="tab" 
+                        href="#personal-info" 
+                        role="tab">
+                            Personal Info
+                        </a>
+                    </li>
+                    <li class="mr-2 last:mr-0 flex-auto text-center">
+                        <a class="text-sm font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-gray-600 bg-white" 
+                        data-toggle="tab" 
+                        href="#attendances" 
+                        role="tab">
+                            Attendances
+                        </a>
+                    </li>
+                </ul>
             </div>
 
+            <div class="tab-content mt-8">
+                <!-- Personal Info Tab Content -->
+                <div class="tab-pane active" id="personal-info" role="tabpanel">
+                    <h2 class="text-xl font-semibold mb-4">Personal Information</h2>
+                    <!-- Your Personal Info Content Goes Here -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <div class="flex flex-col md:flex-row items-center">
+                            <div x-show="!editMode" class="profile-photo-container flex items-center mt-2">
+                                <img class="w-40 h-40 md:w-48 md:h-48 rounded-full fit overflow-hidden border-4 border-gray-300" src="{{ Storage::url($intern->photo) }}" alt="Profile Photo">
+                            </div>
+                            <div x-show="editMode" class="mt-2">
+                                <form action="{{ route('update_photo') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="file" name="photo" accept="image/*" class="mt-1 border rounded-lg p-2">
+                                    <button type="submit" class="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none">Upload</button>
+                                </form>
+                            </div>
+                            <div class="md:ml-8 mt-6 md:mt-0 text-center md:text-left">
+                                <h2 class="text-2xl font-semibold phptext-gray-800">{{ $intern->name }}</h2>
+                                <p class="text-gray-600">{{ $intern->user->email }}</p>
+                                <button @click="editMode = !editMode" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none">
+                                    <span x-show="!editMode">Edit Profile</span>
+                                    <span x-show="editMode">Cancel</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attendances Tab Content -->
+                <div class="tab-pane hidden" id="attendances" role="tabpanel">
+                    <h2 class="text-xl font-semibold mb-4">Attendances</h2>
+                    <!-- Your Attendances Content Goes Here -->
+                </div>
+            </div>
+            
+        
     <form action="{{ route('interns.update', $intern->id) }}" method="POST">
         @csrf
         @method('PUT') <!-- Use PUT or PATCH if you're updating existing records -->

@@ -30,6 +30,7 @@ class KetuaTimSeeder extends Seeder
             'user_id' => $subbag->id,
             'division_id' => 1
         ]);
+        
 
         $sosial = User::firstOrCreate([
             'name' => 'Sosial',
