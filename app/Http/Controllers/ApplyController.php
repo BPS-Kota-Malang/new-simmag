@@ -112,13 +112,13 @@ class ApplyController extends Controller
         ->addColumn('actions', function($apply) {
             return '
                 <td class="px-6 py-4 text-center">
-                    <a href="#" data-id="'.$apply->id.'" data-start-date-answer="'.$apply->start_date_answer.'" data-end-date-answer="'.$apply->end_date_answer.'" class="text-blue-600 hover:text-blue-800 edit-btn" data-modal-target="crud-modal">
+                    <a href="#" data-id="'.$apply->id.'" data-start-date-answer="'.$apply->start_date_answer.'" data-end-date-answer="'.$apply->end_date_answer.'" class="text-blue-600 hover:text-blue-800 edit-btn" data-modal-target="edit-date-modal">
                         <i class="fa fa-edit"></i>
                     </a>
                     <a href="'.route('apply.accepted', ['id' => $apply->intern->id]).'" class="text-green-600 hover:text-green-800 mx-2">
                         <i class="fa fa-check-square"></i>
                     </a>
-                    <a href="#" data-id="'.$apply->intern->id.'" class="text-blue-600 hover:text-blue-800 edit-btn" data-modal-target="reject-modal">
+                    <a href="#" data-id="'.$apply->id.'" class="text-blue-600 hover:text-blue-800 reject-btn" data-modal-target="reject-modal">
                         <i class="fa fa-close"></i>
                     </a>
                 </td>';
@@ -178,6 +178,7 @@ class ApplyController extends Controller
             'start_date_answer' => 'required|date',
             'end_date_answer' => 'required|date',
         ]);
+        dd($apply);
 
         // dd($validatedData);
 
@@ -197,12 +198,6 @@ class ApplyController extends Controller
 
         return redirect()->route('apply.index')->with('success', 'Apply updated successfully!');
     }
-
-
-    // public function answerDate ($start_date_answer, $end_date_answer)
-    // {
-
-    // }
 
     /**
      * Remove the specified resource from storage.
@@ -237,15 +232,28 @@ class ApplyController extends Controller
         
     }
 
-    public function rejected (Request $request)
+    public function rejected (Request $request, Apply $apply)
     {
-        $intern = Intern::find($request->id);
-        $apply = Apply::where('intern_id', $intern->id)->first();
-        $intern->update(
-            [
-                'work_status' => 'rejected'
-            ]
-        );
+        $validatedData = $request->validate([
+            'causes' => 'required',
+        ]);
+        // dd($apply);
+        $intern = $apply->intern;
+
+        if ($intern->work_status != "rejected")
+        {
+            $intern->update(
+                [
+                    'work_status' => 'rejected'
+                ]
+            );
+        }
+        $apply->update($validatedData);
+
+        /**
+         * remove Roles From Intern back to User
+         * User can register again with another applies
+         */
 
         $intern->user->removeRole('Intern');
         $intern->user->assignRole('User');

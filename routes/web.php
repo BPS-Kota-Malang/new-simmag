@@ -55,17 +55,17 @@ Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 
 
 Route::middleware('auth')->group(function () {
     Route::get('/sentRegistrationEmail/{intern}', [InternController::class, 'sentRegistrationEmail'])->name('admin.sentRegistrationEmail');
-    Route::resource('interns', InternController::class);
     Route::get('/api/interns/active', [InternController::class, 'getActiveInterns'])->name('api.intern.active');
     Route::get('/api/division', [DivisionController::class, 'getDivision'])->name('api.division');
     Route::post('/intern/updatephoto', [InternController::class, 'updatePhotoProfile'])->name('update_photo');
     Route::patch('/apply/{apply}', [ApplyController::class, 'update'])->name('apply.update');
-    Route::resource('apply', ApplyController::class);
-    Route::resource('logbooks', LogbookController::class);
-    Route::get('/logbookslist', [LogbookController::class, 'getLogbookList'])->name('logbooks.list');
     Route::get('/InternAttendanceData', [AttendanceController::class, 'getInternAttendanceData'])->name('attendance.getdata');
+    Route::get('/logbookslist', [LogbookController::class, 'getLogbookList'])->name('logbooks.list');
     Route::post('/reportAttendance', [AttendanceController::class, 'reportAttendancePage'])->name('attendance.report');
     Route::post('/exportAttendance', [AttendanceController::class, 'exportAttendance'])->name('attendance.export');
+    Route::resource('interns', InternController::class);
+    Route::resource('apply', ApplyController::class);
+    Route::resource('logbooks', LogbookController::class);
     Route::resource('attendance', AttendanceController::class);
     Route::resource('university', UniversityController::class);
     Route::resource('faculty', FacultyController::class);
@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/bulk-set-work-location', [AdminAttendanceController::class, 'bulkSetWorkLocation'])->name('admin.bulkSetWorkLocation');
     Route::post('/markattendance', [AttendanceController::class, 'markAttendance'])->name('attendance.mark');
     Route::get('/apply/accepted/{id}', [ApplyController::class, 'accepted'])->name('apply.accepted');
-    Route::get('/apply/rejected/{id}', [ApplyController::class, 'rejected'])->name('apply.rejected');
+    Route::patch('/apply/rejected/{apply}', [ApplyController::class, 'rejected'])->name('apply.rejected');
 
 
     

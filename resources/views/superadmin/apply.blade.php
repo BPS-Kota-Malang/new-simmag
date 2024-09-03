@@ -39,11 +39,11 @@
     </div>
 
     <!-- Modal Reject Causes -->
-    <div id="reject-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div id="edit-date-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 flex items-center justify-center z-50 hidden">
         <div class="relative w-full max-w-lg mx-auto bg-white rounded-lg shadow-lg">
             <div class="p-4 border-b">
                 <h3 class="text-lg font-semibold text-gray-900">Edit Tanggal Pengajuan</h3>
-                <button type="button" class="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-2 absolute top-2 right-2" data-modal-toggle="crud-modal">
+                <button type="button" class="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-2 absolute top-2 right-2" data-modal-toggle="edit-date-modal">
                     <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l6 6m0 0l6 6m-6-6l6-6m-6 6L1 7" />
                     </svg>
@@ -77,17 +77,17 @@
         </div>
     </div>
 
-    <!-- Modal Edit Date -->
     <!-- Reject Modal -->
     <div id="reject-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
         <div class="bg-white p-5 rounded-lg shadow-lg w-1/3">
             <h2 class="text-xl font-bold mb-4">Reject Application</h2>
-            <form action="{{ route('apply.rejected') }}" method="POST">
+            <form action="" method="POST">
                 @csrf
+                @method('PATCH')
                 <input type="hidden" name="apply_id" value="">
                 <div class="mb-4">
-                    <label for="rejection_cause" class="block text-gray-700">Cause of Rejection:</label>
-                    <textarea name="rejection_cause" id="rejection_cause" rows="4" class="w-full p-2 border border-gray-300 rounded-lg"></textarea>
+                    <label for="causes" class="block text-gray-700">Cause of Rejection:</label>
+                    <textarea name="causes" id="causes" rows="4" class="w-full p-2 border border-gray-300 rounded-lg"></textarea>
                 </div>
                 <div class="flex justify-end">
                     <button type="button" class="close-modal bg-gray-400 text-white px-4 py-2 rounded mr-2">Cancel</button>
@@ -148,12 +148,25 @@ $(document).ready(function() {
         const endDateAnswer = $(this).data('end-date-answer');
 
         // Set data to modal fields
-        $('#crud-modal form').attr('action', '/apply/' + id); // Adjust URL if needed
+        $('#edit-date-modal form').attr('action', '/apply/' + id); // Adjust URL if needed
         $('#start_date_answer').val(startDateAnswer);
         $('#end_date_answer').val(endDateAnswer);
 
         // Show the modal
-        $('#crud-modal').removeClass('hidden');
+        $('#edit-date-modal').removeClass('hidden');
+    });
+    // Handle the click event for edit buttons
+    $('#intern-applicant-table').on('click', '.reject-btn', function(event) {
+        event.preventDefault();
+
+        // Get data from attributes
+        const id = $(this).data('id');
+        $('#reject-modal form').attr('action', '/apply/rejected/' + id);
+
+        // Set the hidden input value with the apply ID
+        // $('#reject-modal form input[name="apply_id"]').val(id);
+        // Show the modal
+        $('#reject-modal').removeClass('hidden');
     });
 
     $('#search').on('keyup', function() {
@@ -161,9 +174,11 @@ $(document).ready(function() {
     });
 
     // Handle the close button click
-    $('[data-modal-toggle="crud-modal"]').on('click', function() {
-        $('#crud-modal').addClass('hidden');
+    $('[data-modal-toggle="edit-date-modal"]').on('click', function() {
+        $('#edit-date-modal').addClass('hidden');
     });
+
+    
 });
 </script>
 @endsection

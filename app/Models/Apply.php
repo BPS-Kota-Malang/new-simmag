@@ -11,7 +11,7 @@ class Apply extends Model
     use HasFactory;
 
     protected $fillable = [
-        'intern_id', 'start_date_apply', 'end_date_apply', 'start_date_answer', 'end_date_answer'
+        'intern_id', 'start_date_apply', 'end_date_apply', 'start_date_answer', 'end_date_answer','causes'
     ];
 
 
