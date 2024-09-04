@@ -54,38 +54,53 @@ Route::get('/privacy-policy', function () {
 Route::get('/dashboard', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/sentRegistrationEmail/{intern}', [InternController::class, 'sentRegistrationEmail'])->name('admin.sentRegistrationEmail');
-    Route::get('/api/interns/active', [InternController::class, 'getActiveInterns'])->name('api.intern.active');
-    Route::get('/api/division', [DivisionController::class, 'getDivision'])->name('api.division');
+    /**
+     * User Routing
+     */
+    Route::post('/markattendance', [AttendanceController::class, 'markAttendance'])->name('attendance.mark');
     Route::post('/intern/updatephoto', [InternController::class, 'updatePhotoProfile'])->name('update_photo');
     Route::patch('/apply/{apply}', [ApplyController::class, 'update'])->name('apply.update');
     Route::get('/InternAttendanceData', [AttendanceController::class, 'getInternAttendanceData'])->name('attendance.getdata');
     Route::get('/logbookslist', [LogbookController::class, 'getLogbookList'])->name('logbooks.list');
     Route::post('/reportAttendance', [AttendanceController::class, 'reportAttendancePage'])->name('attendance.report');
     Route::post('/exportAttendance', [AttendanceController::class, 'exportAttendance'])->name('attendance.export');
-    Route::resource('interns', InternController::class);
-    Route::resource('apply', ApplyController::class);
-    Route::resource('logbooks', LogbookController::class);
-    Route::resource('attendance', AttendanceController::class);
-    Route::resource('university', UniversityController::class);
-    Route::resource('faculty', FacultyController::class);
-    Route::resource('department', DepartmentController::class);
-    Route::resource('activity', ActivityController::class);
     Route::get('/searchActivity', [ActivityController::class, 'search'])->name('activity.search');
+    
+    
+    /**
+     * API Routing
+     */
+    Route::get('/sentRegistrationEmail/{intern}', [InternController::class, 'sentRegistrationEmail'])->name('admin.sentRegistrationEmail');
     Route::get('/searchUniversity', [UniversityController::class, 'search'])->name('university.search');
     Route::get('/searchFaculty', [FacultyController::class, 'search'])->name('faculty.search');
     Route::get('/searchDepartment', [DepartmentController::class, 'search'])->name('department.search');
-    Route::resource('/admin/attendance', AdminAttendanceController::class,['as' => 'admin']);
+    Route::get('/api/interns/active', [InternController::class, 'getActiveInterns'])->name('api.intern.active');
+    Route::get('/api/division', [DivisionController::class, 'getDivision'])->name('api.division');
+    
+    /**
+     * Admin Routing
+     */
+    Route::get('/admin/attendance/export', [AdminAttendanceController::class, 'export'])->name('admin.attendance.export');
     Route::get('/admin/getAttendance', [AdminAttendanceController::class, 'getData'])->name('admin.attendance.getData');
     Route::get('/admin/getApplies', [ApplyController::class, 'getData'])->name('admin.apply.getData');
     Route::get('/admin/getApplies', [ApplyController::class, 'getData'])->name('admin.apply.getData');
     Route::get('/admin/bulk-set-work-location', [AdminAttendanceController::class, 'showBulkSetWorkLocationForm'])->name('admin.bulkSetWorkLocationForm');
     Route::post('/admin/bulk-set-work-location', [AdminAttendanceController::class, 'bulkSetWorkLocation'])->name('admin.bulkSetWorkLocation');
-    Route::post('/markattendance', [AttendanceController::class, 'markAttendance'])->name('attendance.mark');
     Route::get('/apply/accepted/{id}', [ApplyController::class, 'accepted'])->name('apply.accepted');
     Route::patch('/apply/rejected/{apply}', [ApplyController::class, 'rejected'])->name('apply.rejected');
-
-
+    
+    /**
+     * Resources Routing
+     */
+    Route::resource('interns', InternController::class);
+    Route::resource('apply', ApplyController::class);
+    Route::resource('logbooks', LogbookController::class);
+    Route::resource('university', UniversityController::class);
+    Route::resource('faculty', FacultyController::class);
+    Route::resource('department', DepartmentController::class);
+    Route::resource('activity', ActivityController::class);
+    Route::resource('attendance', AttendanceController::class);
+    Route::resource('/admin/attendance', AdminAttendanceController::class,['as' => 'admin']);
     
     Route::post('/logout', function () {
         Auth::logout();

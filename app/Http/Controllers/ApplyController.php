@@ -34,7 +34,7 @@ class ApplyController extends Controller
     public function index()
     {
         $applies = Apply::all();
-        return view('superadmin.apply')
+        return view('superadmin-apply.index')
                     ->with('apply', $applies);
     }
 
@@ -57,16 +57,16 @@ class ApplyController extends Controller
 
             switch ($status) {
                 case 'accepted':
-                    $class = 'bg-green-100 text-green-800';
+                    $class = 'text-green-800 bg-green-100';
                     break;
                 case 'rejected':
-                    $class = 'bg-red-100 text-red-800';
+                    $class = 'text-red-800 bg-red-100';
                     break;
                 case 'on progress':
-                    $class = 'bg-blue-100 text-blue-800';
+                    $class = 'text-blue-800 bg-blue-100';
                     break;
                 default:
-                    $class = 'bg-gray-100 text-gray-800';
+                    $class = 'text-gray-800 bg-gray-100';
                     break;
             }
 
@@ -115,7 +115,7 @@ class ApplyController extends Controller
                     <a href="#" data-id="'.$apply->id.'" data-start-date-answer="'.$apply->start_date_answer.'" data-end-date-answer="'.$apply->end_date_answer.'" class="text-blue-600 hover:text-blue-800 edit-btn" data-modal-target="edit-date-modal">
                         <i class="fa fa-edit"></i>
                     </a>
-                    <a href="'.route('apply.accepted', ['id' => $apply->intern->id]).'" class="text-green-600 hover:text-green-800 mx-2">
+                    <a href="'.route('apply.accepted', ['id' => $apply->intern->id]).'" class="mx-2 text-green-600 hover:text-green-800">
                         <i class="fa fa-check-square"></i>
                     </a>
                     <a href="#" data-id="'.$apply->id.'" class="text-blue-600 hover:text-blue-800 reject-btn" data-modal-target="reject-modal">
@@ -178,7 +178,6 @@ class ApplyController extends Controller
             'start_date_answer' => 'required|date',
             'end_date_answer' => 'required|date',
         ]);
-        dd($apply);
 
         // dd($validatedData);
 
@@ -260,7 +259,7 @@ class ApplyController extends Controller
 
         $this->sentChangesDateEmail($apply);
 
-        return redirect()->route('dashboard')->with('success', 'Status updated successfully!');
+        return redirect()->back()->with('success', 'Status updated successfully!');
 
     }
 

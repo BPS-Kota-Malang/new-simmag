@@ -2,70 +2,59 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Intern;
-use Illuminate\Support\Carbon;
 use App\Models\Attendance;
+use Carbon\Carbon;
+use Faker\Factory as Faker;
 
 class AttendanceSeeder extends Seeder
 {
     public function run()
     {
-        $interns = Intern::all();
+        $faker = Faker::create();
+        $internIds = [1, 4];
 
-        // Define the range of dates for the current month and the previous month
-        $currentMonthStart = Carbon::now()->startOfMonth();
-        $currentMonthEnd = Carbon::now()->endOfMonth();
-        $previousMonthStart = Carbon::now()->subMonth()->startOfMonth();
-        $previousMonthEnd = Carbon::now()->subMonth()->endOfMonth();
+        // Define the start and end dates for the four months
+        $startDate = Carbon::createFromDate(2023, 5, 1);
+        $endDate = Carbon::createFromDate(2023, 8, 31);
 
-        // Generate attendances for the previous month
-        $this->generateAttendances($interns, $previousMonthStart, $previousMonthEnd);
-
-        // Generate attendances for the current month
-        $this->generateAttendances($interns, $currentMonthStart, $currentMonthEnd);
-    }
-
-    private function generateAttendances($interns, $startDate, $endDate)
-    {
-        foreach ($interns as $intern) {
+        // Loop through each intern
+        foreach ($internIds as $internId) {
             $date = $startDate->copy();
-            while ($date <= $endDate) {
-                Attendance::create([
-                    'intern_id' => $intern->id,
-                    'date' => $date->format('Y-m-d'),
-                    'check_in' => $this->randomCheckInTime(),
-                    'check_out' => $this->randomCheckOutTime(),
-                    'status' => $this->randomStatus(),
-                    'work_location' => $this->randomWorkLocation(),
-                ]);
-                $date->addDay();
+
+            // Loop through each date in the range
+            while ($date->lte($endDate)) {
+                // Only generate attendance for weekdays (Monday to Friday)
+                if ($date->isWeekday()) {
+                    $checkIn = $faker->optional(0.9, null)->time('H:i:s');
+                    $checkOut = $checkIn ? Carbon::createFromTimeString($checkIn)->addHours($faker->numberBetween(6, 8))->format('H:i:s') : null;
+
+                    Attendance::create([
+                        'intern_id' => $internId,
+                        'date' => $date->format('Y-m-d'),
+                        'check_in' => $checkIn,
+                        'check_out' => $checkOut,
+                        'workhours' => $checkIn && $checkOut ? Carbon::parse($checkIn)->diffInHours($checkOut) : null,
+                        'status' => $checkIn ? $faker->randomElement(['present', 'late', 'leave early']) : $faker->randomElement(['absent', 'sick', 'leave']),
+                        'work_location' => $faker->randomElement(['office', 'home']),
+                        'latitude_in' => $checkIn ? $faker->latitude : null,
+                        'longitude_in' => $checkIn ? $faker->longitude : null,
+                        'latitude_out' => $checkOut ? $faker->latitude : null,
+                        'longitude_out' => $checkOut ? $faker->longitude : null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                $date->addDay(); // Move to the next day
             }
         }
     }
-
-    private function randomCheckInTime()
+   
+    public function rollback()
     {
-        // Randomly return a check-in time between 8:00 AM and 9:00 AM, or null
-        return rand(0, 1) ? Carbon::createFromTime(rand(8, 9), rand(0, 59))->format('H:i:s') : null;
-    }
-
-    private function randomCheckOutTime()
-    {
-        // Randomly return a check-out time between 4:00 PM and 6:00 PM, or null
-        return rand(0, 1) ? Carbon::createFromTime(rand(16, 18), rand(0, 59))->format('H:i:s') : null;
-    }
-
-    private function randomStatus()
-    {
-        $statuses = ['present', 'late', 'leave early', 'absent'];
-        return $statuses[array_rand($statuses)];
-    }
-
-    private function randomWorkLocation()
-    {
-        $locations = ['office', 'home'];
-        return $locations[array_rand($locations)];
+        // Delete all records that were seeded
+        Attendance::where('created_at', '>=', now()->subMinutes(10))->delete();
+        // Adjust the time window to match when you ran the seeder
     }
 }

@@ -38,7 +38,7 @@ class HomeController extends Controller
                 $countMen = $activeInterns->where('sex', 'man')->count();
                 $countWomen = $activeInterns->where('sex', 'woman')->count();
 
-                return view('superadmin.dashboard')
+                return view('superadmin-dashboard.index')
                     ->with('countUniversity', $countUniversity)
                     ->with('countMen', $countMen)
                     ->with('countWomen', $countWomen)
@@ -52,7 +52,7 @@ class HomeController extends Controller
                 $countMen = $activeInterns->where('sex', 'man')->count();
                 $countWomen = $activeInterns->where('sex', 'woman')->count();
 
-                return view('superadmin.dashboard')
+                return view('superadmin-dashboard.index')
                     ->with('countUniversity', $countUniversity)
                     ->with('countMen', $countMen)
                     ->with('countWomen', $countWomen)

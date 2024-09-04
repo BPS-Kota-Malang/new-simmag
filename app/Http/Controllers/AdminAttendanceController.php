@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InternAttendanceExport;
 use Illuminate\Http\Request;
 use App\Models\Intern;
 use App\Http\Requests\StoreInternRequest;
 use App\Http\Requests\UpdateInternRequest;
 use App\Models\Attendance;
+use App\Models\Division;
 use App\Services\InternService;
 use App\Services\AttendanceService;
 use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Html\Button;
+use Yajra\DataTables\Html\Column;
 
 class AdminAttendanceController extends Controller
 {   
@@ -28,19 +33,19 @@ class AdminAttendanceController extends Controller
      */
     public function index()
     {
-        return view('superadmin.attendance');
+        $interns = $this->internService->getAllActiveInterns();
+        $divisions = Division::all();
+        return view('superadmin-attendance.index')
+                ->with( 'divisions', $divisions)
+                ->with ('interns', $interns);
     }
     
-    public function getData()
+    public function getData(Request $request)
     {
-        $start_date = '2024-01-01';
-        $end_date = Carbon::now()->format('Y-m-d');
-        // $activeAttendances = $this->attendanceService-getAttendancesForDateRange($start_date, $end_date);
-        $attendances = $this->attendanceService->getAllAttendancesForDateRange($start_date, $end_date);
-        // $attendances = Attendance::all();
-        // dd($attendances);
-        // return $attendances->toJson();
-        
+      
+        $attendances = $this->attendanceService->getFilteredAttendances($request->all());
+
+       
         return DataTables::of($attendances)
         ->addColumn('intern_name', function($attendance) {
             return $attendance->intern->name;
@@ -58,6 +63,8 @@ class AdminAttendanceController extends Controller
         ->make(true);
         // ->toJson();
     }
+
+    
     /**
      * Show Bulk form
      */
@@ -121,7 +128,7 @@ class AdminAttendanceController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        
     }
 
     /**
@@ -138,5 +145,11 @@ class AdminAttendanceController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function export(Request $request)
+    {   
+        $filters = $request->all();
+        return Excel::download(new InternAttendanceExport($filters), 'intern_attendance.xlsx');
     }
 }
