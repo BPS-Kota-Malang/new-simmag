@@ -2,13 +2,13 @@
 
 @section('content')
 <div class="container w-full px-4 py-12">
-    <div class="mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 class="text-3xl font-semibold text-gray-800 mb-8">Intern Applies</h2>
+    <div class="p-8 mx-auto bg-white rounded-lg shadow-lg">
+        <h2 class="mb-8 text-3xl font-semibold text-gray-800">Intern Applies</h2>
 
-        <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center justify-between mb-8">
             <div class="relative w-full max-w-xs">
-                <input type="text" id="search" placeholder="Search..." class="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-                <svg class="absolute top-2 left-3 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <input type="text" id="search" placeholder="Search..." class="block w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                <svg class="absolute w-5 h-5 text-gray-500 top-2 left-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a7 7 0 014.468 12.264l4.379 4.379a1 1 0 01-1.415 1.415l-4.379-4.379A7 7 0 1111 4z" />
                 </svg>
             </div>
@@ -39,11 +39,11 @@
     </div>
 
     <!-- Modal Edit Causes -->
-    <div id="edit-date-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div id="edit-date-modal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="relative w-full max-w-lg mx-auto bg-white rounded-lg shadow-lg">
             <div class="p-4 border-b">
                 <h3 class="text-lg font-semibold text-gray-900">Edit Tanggal Pengajuan</h3>
-                <button type="button" class="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-2 absolute top-2 right-2" data-modal-toggle="edit-date-modal">
+                <button type="button" class="absolute p-2 text-sm text-gray-400 rounded-lg hover:bg-gray-200 hover:text-gray-900 top-2 right-2" data-modal-toggle="edit-date-modal">
                     <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l6 6m0 0l6 6m-6-6l6-6m-6 6L1 7" />
                     </svg>
@@ -53,19 +53,19 @@
             <form action="" method="POST" class="p-4">
                 @csrf
                 @method('PATCH')
-                <div class="grid gap-4 mb-4 grid-cols-2">
+                <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="start_date_answer" class="block text-sm font-medium text-gray-700">Start Date</label>
-                        <input type="date" name="start_date_answer" id="start_date_answer" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
+                        <input type="date" name="start_date_answer" id="start_date_answer" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
                         @error('start_date_answer')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                            <span class="text-sm text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
                     <div>
                         <label for="end_date_answer" class="block text-sm font-medium text-gray-700">End Date</label>
-                        <input type="date" name="end_date_answer" id="end_date_answer" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
+                        <input type="date" name="end_date_answer" id="end_date_answer" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
                         @error('end_date_answer')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                            <span class="text-sm text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
                 </div>
@@ -78,9 +78,9 @@
     </div>
 
     <!-- Reject Modal -->
-    <div id="reject-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
-        <div class="bg-white p-5 rounded-lg shadow-lg w-1/3">
-            <h2 class="text-xl font-bold mb-4">Reject Application</h2>
+    <div id="reject-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-600 bg-opacity-50">
+        <div class="w-1/3 p-5 bg-white rounded-lg shadow-lg">
+            <h2 class="mb-4 text-xl font-bold">Reject Application</h2>
             <form action="" method="POST">
                 @csrf
                 @method('PATCH')
@@ -90,8 +90,8 @@
                     <textarea name="causes" id="causes" rows="4" class="w-full p-2 border border-gray-300 rounded-lg"></textarea>
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" class="close-modal bg-gray-400 text-white px-4 py-2 rounded mr-2">Cancel</button>
-                    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Reject</button>
+                    <button type="button" class="px-4 py-2 mr-2 text-white bg-gray-400 rounded close-modal">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-white bg-red-600 rounded">Reject</button>
                 </div>
             </form>
         </div>

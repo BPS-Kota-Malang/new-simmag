@@ -118,7 +118,7 @@ class ApplyController extends Controller
                     <a href="'.route('apply.accepted', ['id' => $apply->intern->id]).'" class="mx-2 text-green-600 hover:text-green-800">
                         <i class="fa fa-check-square"></i>
                     </a>
-                    <a href="#" data-id="'.$apply->id.'" class="text-blue-600 hover:text-blue-800 reject-btn" data-modal-target="reject-modal">
+                    <a href="#" data-id="'.$apply->id.'" class="text-red-600 hover:text-red-800 reject-btn" data-modal-target="reject-modal">
                         <i class="fa fa-close"></i>
                     </a>
                 </td>';

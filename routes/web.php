@@ -59,7 +59,6 @@ Route::middleware('auth')->group(function () {
      */
     Route::post('/markattendance', [AttendanceController::class, 'markAttendance'])->name('attendance.mark');
     Route::post('/intern/updatephoto', [InternController::class, 'updatePhotoProfile'])->name('update_photo');
-    Route::patch('/apply/{apply}', [ApplyController::class, 'update'])->name('apply.update');
     Route::get('/InternAttendanceData', [AttendanceController::class, 'getInternAttendanceData'])->name('attendance.getdata');
     Route::get('/logbookslist', [LogbookController::class, 'getLogbookList'])->name('logbooks.list');
     Route::post('/reportAttendance', [AttendanceController::class, 'reportAttendancePage'])->name('attendance.report');
@@ -86,6 +85,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/getApplies', [ApplyController::class, 'getData'])->name('admin.apply.getData');
     Route::get('/admin/bulk-set-work-location', [AdminAttendanceController::class, 'showBulkSetWorkLocationForm'])->name('admin.bulkSetWorkLocationForm');
     Route::post('/admin/bulk-set-work-location', [AdminAttendanceController::class, 'bulkSetWorkLocation'])->name('admin.bulkSetWorkLocation');
+    Route::patch('/apply/{apply}', [ApplyController::class, 'update'])->name('apply.update');
     Route::get('/apply/accepted/{id}', [ApplyController::class, 'accepted'])->name('apply.accepted');
     Route::patch('/apply/rejected/{apply}', [ApplyController::class, 'rejected'])->name('apply.rejected');
     
