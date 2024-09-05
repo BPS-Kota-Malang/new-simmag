@@ -1,6 +1,6 @@
 <nav class="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
-    <div class="flex flex-wrap justify-between items-center">
-      <div class="flex justify-start items-center">
+    <div class="flex flex-wrap items-center justify-between">
+      <div class="flex items-center justify-start">
         <button
           data-drawer-target="drawer-navigation"
           data-drawer-toggle="drawer-navigation"
@@ -38,7 +38,7 @@
         <a href="{{ route('dashboard') }}" class="flex items-center justify-between mr-4">
           <img
             src="{{ asset('storage/img/BPS.png') }}"
-            class="mr-3 h-8"
+            class="h-8 mr-3"
             alt="Flowbite Logo"
           />
           <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SIMMAG </span>
@@ -80,27 +80,27 @@
 
         <!-- Dropdown menu -->
         <div
-          class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700 rounded-xl"
+          class="z-50 hidden max-w-sm my-4 overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:divide-gray-600 dark:bg-gray-700 rounded-xl"
           id="notification-dropdown"
         >
           <div
-            class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300"
+            class="block px-4 py-2 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300"
           >
             Notifications
           </div>
           <div>
             <a
               href="#"
-              class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
+              class="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
             >
               <div class="flex-shrink-0">
                 <img
-                  class="w-11 h-11 rounded-full"
+                  class="rounded-full w-11 h-11"
                   src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png"
                   alt="Bonnie Green avatar"
                 />
                 <div
-                  class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 rounded-full border border-white bg-primary-700 dark:border-gray-700"
+                  class="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 border border-white rounded-full bg-primary-700 dark:border-gray-700"
                 >
                   <svg
                     aria-hidden="true"
@@ -118,7 +118,7 @@
                   </svg>
                 </div>
               </div>
-              <div class="pl-3 w-full">
+              <div class="w-full pl-3">
                 <div
                   class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"
                 >
@@ -136,16 +136,16 @@
             </a>
             <a
               href="#"
-              class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
+              class="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
             >
               <div class="flex-shrink-0">
                 <img
-                  class="w-11 h-11 rounded-full"
+                  class="rounded-full w-11 h-11"
                   src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
                   alt="Jese Leos avatar"
                 />
                 <div
-                  class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-gray-900 rounded-full border border-white dark:border-gray-700"
+                  class="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-900 border border-white rounded-full dark:border-gray-700"
                 >
                   <svg
                     aria-hidden="true"
@@ -160,7 +160,7 @@
                   </svg>
                 </div>
               </div>
-              <div class="pl-3 w-full">
+              <div class="w-full pl-3">
                 <div
                   class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"
                 >
@@ -182,16 +182,16 @@
             </a>
             <a
               href="#"
-              class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
+              class="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
             >
               <div class="flex-shrink-0">
                 <img
-                  class="w-11 h-11 rounded-full"
+                  class="rounded-full w-11 h-11"
                   src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png"
                   alt="Joseph McFall avatar"
                 />
                 <div
-                  class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-red-600 rounded-full border border-white dark:border-gray-700"
+                  class="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-red-600 border border-white rounded-full dark:border-gray-700"
                 >
                   <svg
                     aria-hidden="true"
@@ -208,7 +208,7 @@
                   </svg>
                 </div>
               </div>
-              <div class="pl-3 w-full">
+              <div class="w-full pl-3">
                 <div
                   class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"
                 >
@@ -230,16 +230,16 @@
             </a>
             <a
               href="#"
-              class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
+              class="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
             >
               <div class="flex-shrink-0">
                 <img
-                  class="w-11 h-11 rounded-full"
+                  class="rounded-full w-11 h-11"
                   src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png"
                   alt="Roberta Casas image"
                 />
                 <div
-                  class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-green-400 rounded-full border border-white dark:border-gray-700"
+                  class="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-green-400 border border-white rounded-full dark:border-gray-700"
                 >
                   <svg
                     aria-hidden="true"
@@ -256,7 +256,7 @@
                   </svg>
                 </div>
               </div>
-              <div class="pl-3 w-full">
+              <div class="w-full pl-3">
                 <div
                   class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"
                 >
@@ -279,16 +279,16 @@
             </a>
             <a
               href="#"
-              class="flex py-3 px-4 hover:bg-gray-100 dark:hover:bg-gray-600"
+              class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600"
             >
               <div class="flex-shrink-0">
                 <img
-                  class="w-11 h-11 rounded-full"
+                  class="rounded-full w-11 h-11"
                   src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png"
                   alt="Robert image"
                 />
                 <div
-                  class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-purple-500 rounded-full border border-white dark:border-gray-700"
+                  class="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-purple-500 border border-white rounded-full dark:border-gray-700"
                 >
                   <svg
                     aria-hidden="true"
@@ -303,7 +303,7 @@
                   </svg>
                 </div>
               </div>
-              <div class="pl-3 w-full">
+              <div class="w-full pl-3">
                 <div
                   class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"
                 >
@@ -323,12 +323,12 @@
           </div>
           <a
             href="#"
-            class="block py-2 text-md font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-600 dark:text-white dark:hover:underline"
+            class="block py-2 font-medium text-center text-gray-900 text-md bg-gray-50 hover:bg-gray-100 dark:bg-gray-600 dark:text-white dark:hover:underline"
           >
             <div class="inline-flex items-center">
               <svg
                 aria-hidden="true"
-                class="mr-2 w-4 h-4 text-gray-500 dark:text-gray-400"
+                class="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -368,11 +368,11 @@
 
         <!-- Dropdown menu -->
         {{-- <div
-          class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+          class="z-50 hidden max-w-sm my-4 overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
           id="apps-dropdown"
         >
           <div
-            class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300"
+            class="block px-4 py-2 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-600 dark:text-gray-300"
           >
             Apps
           </div>
@@ -383,7 +383,7 @@
             >
               <svg
                 aria-hidden="true"
-                class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
+                class="mx-auto mb-1 text-gray-400 w-7 h-7 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -402,7 +402,7 @@
             >
               <svg
                 aria-hidden="true"
-                class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
+                class="mx-auto mb-1 text-gray-400 w-7 h-7 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -419,7 +419,7 @@
             >
               <svg
                 aria-hidden="true"
-                class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
+                class="mx-auto mb-1 text-gray-400 w-7 h-7 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -438,7 +438,7 @@
             >
               <svg
                 aria-hidden="true"
-                class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
+                class="mx-auto mb-1 text-gray-400 w-7 h-7 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -459,7 +459,7 @@
             >
               <svg
                 aria-hidden="true"
-                class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
+                class="mx-auto mb-1 text-gray-400 w-7 h-7 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -480,7 +480,7 @@
             >
               <svg
                 aria-hidden="true"
-                class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
+                class="mx-auto mb-1 text-gray-400 w-7 h-7 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -502,7 +502,7 @@
             >
               <svg
                 aria-hidden="true"
-                class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
+                class="mx-auto mb-1 text-gray-400 w-7 h-7 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -526,7 +526,7 @@
             >
               <svg
                 aria-hidden="true"
-                class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
+                class="mx-auto mb-1 text-gray-400 w-7 h-7 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -547,7 +547,7 @@
             >
               <svg
                 aria-hidden="true"
-                class="mx-auto mb-1 w-7 h-7 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
+                class="mx-auto mb-1 text-gray-400 w-7 h-7 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -577,17 +577,17 @@
         >
           <span class="sr-only">Open user menu</span>
           <img
-            class="w-8 h-8 rounded-full fit overflow-hidden border-4 border-gray-300"
+            class="w-8 h-8 overflow-hidden border-4 border-gray-300 rounded-full fit"
             src= {{ Auth::check() && Auth::user()->intern ? Storage::url(Auth::user()->intern->photo) : asset('storage/img/man.png') }}
             alt="user photo"
           />
         </button>
         <!-- Dropdown menu -->
         <div
-          class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+          class="z-50 hidden w-56 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
           id="dropdown"
         >
-          <div class="py-3 px-4">
+          <div class="px-4 py-3">
             <span
               class="block text-sm font-semibold text-gray-900 dark:text-white"
               {{-- >{{ Auth::user()->intern->name }}</span --}}
@@ -605,14 +605,14 @@
             <li>
               <a
                 href="{{ route('interns.index') }}"
-                class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                 >My profile</a
               >
             </li>
             {{-- <li>
               <a
                 href="#"
-                class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                class="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                 >Account settings</a
               >
             </li> --}}
@@ -624,9 +624,9 @@
             <li>
               <a
                 href="#"
-                class="flex items-center py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                class="flex items-center px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 ><svg
-                  class="mr-2 w-5 h-5 text-gray-400"
+                  class="w-5 h-5 mr-2 text-gray-400"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -643,9 +643,9 @@
             <li>
               <a
                 href="#"
-                class="flex items-center py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                class="flex items-center px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 ><svg
-                  class="mr-2 w-5 h-5 text-gray-400"
+                  class="w-5 h-5 mr-2 text-gray-400"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -660,12 +660,12 @@
             <li>
               <a
                 href="#"
-                class="flex justify-between items-center py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                class="flex items-center justify-between px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
                 <span class="flex items-center">
                   <svg
                     aria-hidden="true"
-                    class="mr-2 w-5 h-5 text-primary-600 dark:text-primary-500"
+                    class="w-5 h-5 mr-2 text-primary-600 dark:text-primary-500"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"

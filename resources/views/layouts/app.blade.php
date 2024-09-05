@@ -43,35 +43,54 @@
         </script>
     </head>
     <body
-        class="font-inter antialiased bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400"
+        class="antialiased text-gray-600 bg-gray-100 font-inter dark:bg-gray-900 dark:text-gray-400"
         :class="{ 'sidebar-expanded': sidebarExpanded }"
         x-data="{ sidebarOpen: false, sidebarExpanded: localStorage.getItem('sidebar-expanded') == 'true' }"
-        x-init="$watch('sidebarExpanded', value => localStorage.setItem('sidebar-expanded', value))"    
+        x-init="$watch('sidebarExpanded', value => localStorage.setItem('sidebar-expanded', value))"
     >
 
-        <script>
-            if (localStorage.getItem('sidebar-expanded') == 'true') {
-                document.querySelector('body').classList.add('sidebar-expanded');
-            } else {
-                document.querySelector('body').classList.remove('sidebar-expanded');
-            }
-        </script>
+    <script>
+        if (localStorage.getItem('sidebar-expanded') == 'true') {
+            document.querySelector('body').classList.add('sidebar-expanded');
+        } else {
+            document.querySelector('body').classList.remove('sidebar-expanded');
+        }
+    </script>
 
-        <!-- Page wrapper -->
-        <div class="flex h-[100dvh] overflow-hidden">
-            @include('layouts.navigation')
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar (fixed width, full height) -->
+        <aside class="fixed z-50 w-64 h-full text-white bg-gray-800">
             @include('layouts.sidebar')
-                <main class="w-full md:ml-64 h-auto pt-4">
-                    @yield('content')
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-                        @csrf
-                        <button type="submit" class="text-red-600 hover:text-red-800">Logout</button>
-                    </form>
-                </main>
+        </aside>
+
+        <!-- Main Content Area (flex-grow takes the remaining space) -->
+        <div class="flex flex-col flex-1 ml-64 overflow-hidden">
+            
+            <!-- Top Navigation (Optional) -->
+            @include('layouts.navigation')
+
+            <!-- Main Content with scrollable area -->
+            <main class="flex-1 p-4 overflow-y-auto">
+                @yield('content')
+
+                <!-- Logout form -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                    @csrf
+                    <button type="submit" class="text-red-600 hover:text-red-800">Logout</button>
+                </form>
+            </main>
+
+            <!-- Optional Footer -->
             @if (Auth::user()->hasAnyRole(['user', 'applicant']))
                 @include('layouts.footer')
             @endif
         </div>
-        @yield('javascript')
-    </body>
+        
+    </div>
+
+    @yield('javascript')
+
+</body>
+
 </html>
