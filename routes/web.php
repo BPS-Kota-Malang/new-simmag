@@ -15,6 +15,7 @@ use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\UserController;
 use App\Models\Division;
 use Illuminate\Support\Facades\Mail;
 
@@ -88,6 +89,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/apply/{apply}', [ApplyController::class, 'update'])->name('apply.update');
     Route::get('/apply/accepted/{id}', [ApplyController::class, 'accepted'])->name('apply.accepted');
     Route::patch('/apply/rejected/{apply}', [ApplyController::class, 'rejected'])->name('apply.rejected');
+    Route::resource('/admin/attendance', AdminAttendanceController::class,['as' => 'admin']);
+    Route::resource('/admin/user', UserController::class,['as' => 'admin']);
     
     /**
      * Resources Routing
@@ -100,7 +103,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('department', DepartmentController::class);
     Route::resource('activity', ActivityController::class);
     Route::resource('attendance', AttendanceController::class);
-    Route::resource('/admin/attendance', AdminAttendanceController::class,['as' => 'admin']);
     
     Route::post('/logout', function () {
         Auth::logout();
