@@ -41,11 +41,11 @@ jobs:
       #     echo "${{ secrets.ENV_FILE }}" > .env
 
       # 7. Run Laravel Artisan Commands (e.g., Migrate, Cache Clear)
-      - name: Run Laravel artisan commands
-        run: |
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
+      # - name: Run Laravel artisan commands
+      #   run: |
+      #     php artisan config:cache
+      #     php artisan route:cache
+      #     php artisan view:cache
 
       # 8. FTP-Deploy-Action for Uploading Files
       - name: FTP Deploy
