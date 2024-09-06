@@ -39,5 +39,3 @@ jobs:
           protocol: ftps
           port: 21
           log-level : verbose
-          timeout : 120000
-          passive: true
