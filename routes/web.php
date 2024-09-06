@@ -12,6 +12,7 @@ use App\Http\Controllers\InternController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\UniversityController;
@@ -91,6 +92,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/apply/rejected/{apply}', [ApplyController::class, 'rejected'])->name('apply.rejected');
     Route::resource('/admin/attendance', AdminAttendanceController::class,['as' => 'admin']);
     Route::resource('/admin/user', UserController::class,['as' => 'admin']);
+    Route::get('/admin/email', [EmailController::class, 'index'])->name('admin.email.index');
+    Route::post('/admin/sendemail', [EmailController::class, 'send'])->name('admin.email.send');
     
     /**
      * Resources Routing
