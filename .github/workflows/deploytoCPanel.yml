@@ -11,26 +11,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout Code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Set Up Node.js Environment for Frontend Dependencies
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
+      # 3. Install Node.js Dependencies and Build Frontend Assets
       - name: Install dependencies
         run: npm install && npm run build
 
+      # 4. Set Up PHP for Laravel
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1' # Adjust to your Laravel PHP version
 
+      # 5. Install Composer Dependencies (Production Mode)
       - name: Install Composer dependencies
         run: composer install --no-dev --prefer-dist --no-progress --no-suggest --optimize-autoloader
 
-      - name : FTP-Deploy-Action
+      # 6. Sync .env file (Make sure you have this in cPanel server)
+      # - name: Upload .env file
+      #   run: |
+      #     echo "${{ secrets.ENV_FILE }}" > .env
+
+      # 7. Run Laravel Artisan Commands (e.g., Migrate, Cache Clear)
+      - name: Run Laravel artisan commands
+        run: |
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+
+      # 8. FTP-Deploy-Action for Uploading Files
+      - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp.bpskotamalang.id
@@ -38,4 +56,10 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
           port: 21
-          log-level : verbose
+          log-level: verbose
+
+      # 9. Post-deployment actions (e.g., permissions for storage)
+      - name: Set Storage Permissions
+        run: |
+          chmod -R 775 storage
+          chmod -R 775 bootstrap/cache
