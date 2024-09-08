@@ -42,6 +42,7 @@ class SocialiteAuthController extends Controller
             'password' => Hash::make('googleaccount'),
             'google_token' => $googleUser->token,
             'google_refresh_token' => $googleUser->refreshToken,
+            
         ]);
 
         $user->assignRole("User");
