@@ -4,7 +4,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "prod": "vite build"
+        "prod": "vite build",
+        "deploy": "node .cpanel-ci.js"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
@@ -23,6 +24,7 @@
         "@fullcalendar/daygrid": "^6.1.15",
         "@fullcalendar/interaction": "^6.1.15",
         "@fullcalendar/timegrid": "^6.1.15",
+        "@samkirkland/ftp-deploy": "^1.2.4",
         "datatables.net-bs4": "^2.1.2",
         "fullcalendar": "^6.1.15"
     }
