@@ -8,13 +8,16 @@ jobs:
     name: 🚀 Deploy to CPanel
     runs-on: ubuntu-latest
     steps:
+      - name: List files
+        run: ls -la /home/runner/work/new-simmag/new-simmag
+
       - name: 🚚 Get Latest Code
         uses: actions/checkout@v4.1.2
 
-      - name: ⚙️ Use PHP 8.3
+      - name: ⚙️ Use PHP 8.2
         uses: shivammathur/setup-php@main
         with:
-          php-version: "8.3"
+          php-version: "8.2"
 
       - name: ⚙️ Use NodeJS 20
         uses: actions/setup-node@v4.0.2
